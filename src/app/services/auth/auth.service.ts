@@ -6,7 +6,7 @@ import {map} from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import {User} from '../../entities/user/user';
 import {LoginDto} from '../../entities/user/login-dto';
-import {environment} from '../../../../../../ComputerServiceAngular/src/environments/environment';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
