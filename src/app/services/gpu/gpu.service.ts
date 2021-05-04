@@ -1,0 +1,35 @@
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
+import {environment} from '../../../../../../ComputerServiceAngular/src/environments/environment';
+import {Gpu} from '../../entities/pc/gpu/gpu';
+import {Page} from '../../entities/page/page';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GpuService {
+
+  constructor(private httpClient: HttpClient) {
+  }
+
+  search(terms: Observable<string>): Observable<GetResponseGpus> {
+    return terms.pipe(
+      debounceTime(150),
+      distinctUntilChanged(),
+      switchMap(term => this.searchEntries(term)));
+  }
+
+  searchEntries(term: any): Observable<GetResponseGpus> {
+    const url = `${environment.apiUrl}/api/gpus/search/findByNameContainingIgnoreCase?name=${term}&page=0&size=10`;
+    return this.httpClient.get<any>(url);
+  }
+}
+
+interface GetResponseGpus {
+  _embedded: {
+    gpus: Gpu[];
+  };
+  page: Page;
+}
