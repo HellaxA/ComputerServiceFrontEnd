@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
-import {environment} from '../../../../../../ComputerServiceAngular/src/environments/environment';
 import {Gpu} from '../../entities/pc/gpu/gpu';
 import {Page} from '../../entities/page/page';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
