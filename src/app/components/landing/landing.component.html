@@ -2,25 +2,74 @@
 
   <div class="row">
     <div class="col back">
-      <button class="options" [routerLink]="['/']">
-        Back to Reality
+      <button class="options" (click)="logout()">
+        Sign out
       </button>
     </div>
   </div>
-  <div class="container-sm">
-    <div class="form-group row">
-      <label class="col-sm-5 col-form-label">Choose GPU:</label>
-      <div id="search-component" class="col-sm-7">
-        <label>
-          <input id="gpu_input"
-            (keyup)="searchTerm$.next($event.target.value)" #term class="form-control" [value]="gpu.name">
-        </label>
-      </div>
+
+  <!-- gpu search -->
+  <div class="card">
+    <div class="card-body">
+      <ng-select [items]="gpus"
+                 bindLabel="name"
+                 [loading]="gpuLoading"
+                 [minTermLength]="1"
+                 [typeahead]="gpuSearchTerm$"
+                 (change)="onChange()"
+                 [multiple]="true"
+                 maxSelectedItems="2"
+                 [compareWith]="compareGpus"
+      placeholder="Gpu search...">
+      </ng-select>
     </div>
-    <div *ngIf="gpus">
-      <div *ngFor="let gpu of gpus">
-          <a (click)="setGpu(gpu)">{{ gpu.name }}</a>
-      </div>
+    <!-- motherboard search -->
+    <div class="card-body">
+      <ng-select [items]="gpus"
+                 bindLabel="name"
+                 [loading]="motherboardLoading"
+                 [minTermLength]="1"
+                 [typeahead]="motherboardTerm$"
+                 (change)="onChange()"
+                 placeholder="Motherboard search...">
+      </ng-select>
+    </div>
+
+    <!-- ram search -->
+    <div class="card-body">
+      <ng-select [items]="gpus"
+                 bindLabel="name"
+                 [loading]="ramLoading"
+                 [minTermLength]="1"
+                 [typeahead]="ramSearchTerm$"
+                 (change)="onChange()"
+                 placeholder="RAM search...">
+      </ng-select>
+    </div>
+
+    <!-- power supply search -->
+    <div class="card-body">
+      <ng-select [items]="powerSupplies"
+                 bindLabel="name"
+                 [loading]="powerSupplyLoading"
+                 [minTermLength]="1"
+                 [typeahead]="powerSupplyTerm$"
+                 (change)="onChange()"
+                 placeholder="Power supply search...">
+      </ng-select>
+    </div>
+
+    <!-- processor search -->
+    <div class="card-body">
+      <ng-select [items]="gpus"
+                 bindLabel="name"
+                 [loading]="cpuLoading"
+                 [minTermLength]="1"
+                 [typeahead]="cpuSearchTerm$"
+                 (change)="onChange()"
+                 placeholder="Processor search...">
+      </ng-select>
     </div>
   </div>
+
 </div>

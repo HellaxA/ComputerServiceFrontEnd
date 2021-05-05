@@ -9,15 +9,13 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {InterceptorService} from './helpers/interceptor/interceptor.service';
 import {ErrorInterceptorService} from './helpers/interceptor/error-interceptor.service';
 import { LandingComponent } from './components/landing/landing.component';
-import {GpuComponent} from './components/gpu/gpu.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    LandingComponent,
-    GpuComponent
+    LandingComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +23,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    NgSelectModule
+    NgSelectModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true},
