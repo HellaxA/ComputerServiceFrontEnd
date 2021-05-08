@@ -1,12 +1,18 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {of, Subject, Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {Gpu} from '../../entities/pc/gpu/gpu';
 import {ActivatedRoute} from '@angular/router';
 import {GpuService} from '../../services/gpu/gpu.service';
-import {catchError, debounceTime, distinctUntilChanged, finalize, switchMap, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
 import {AuthService} from '../../services/auth/auth.service';
 import {PowerSupplyService} from '../../services/power-supply/power-supply.service';
 import {PowerSupply} from '../../entities/pc/powersupply/power-supply';
+import {RamService} from '../../services/ram/ram.service';
+import {MotherboardService} from '../../services/motherboard/motherboard.service';
+import {ProcessorService} from '../../services/processor/processor.service';
+import {Motherboard} from '../../entities/pc/motherboard/motherboard';
+import {Ram} from '../../entities/pc/ram/ram';
+import {Processor} from '../../entities/pc/processor/processor';
 
 @Component({
   selector: 'app-landing',
@@ -16,18 +22,25 @@ import {PowerSupply} from '../../entities/pc/powersupply/power-supply';
 export class LandingComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
               private gpuService: GpuService,
+              private ramService: RamService,
+              private motherboardService: MotherboardService,
+              private cpuService: ProcessorService,
               private powerSupplyService: PowerSupplyService,
               private authService: AuthService) {
   }
 
   gpus: Gpu[] = [];
   powerSupplies: PowerSupply[] = [];
+  rams: Ram[] = [];
+  cpus: Processor[] = [];
+  motherboards: Motherboard[] = [];
 
   gpuLoading = false;
   ramLoading = false;
   cpuLoading = false;
   motherboardLoading = false;
   powerSupplyLoading = false;
+
   gpuSearchTerm$ = new Subject<string>();
   ramSearchTerm$ = new Subject<string>();
   cpuSearchTerm$ = new Subject<string>();
@@ -35,11 +48,17 @@ export class LandingComponent implements OnInit, OnDestroy {
   powerSupplyTerm$ = new Subject<string>();
 
   gpuSearchSubscription: Subscription;
+  ramSearchSubscription: Subscription;
+  cpuSearchSubscription: Subscription;
+  motherboardSearchSubscription: Subscription;
   powerSupplySearchSubscription: Subscription;
 
   ngOnInit(): void {
     this.searchGpus();
     this.searchPowerSupplies();
+    this.searchMotherboards();
+    this.searchCpus();
+    this.searchRams();
   }
 
   searchPowerSupplies(): void {
@@ -52,7 +71,6 @@ export class LandingComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (results) => {
           if (results) {
-            console.log(results);
             this.powerSupplies = results._embedded['power-supplies'];
           }
           this.powerSupplyLoading = false;
@@ -77,12 +95,72 @@ export class LandingComponent implements OnInit, OnDestroy {
       });
   }
 
+  searchMotherboards(): void {
+    this.motherboardSearchSubscription = this.motherboardTerm$
+      .pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        tap(() => this.onMotherboardSearchTermChange()),
+        switchMap(term => this.motherboardService.searchEntries(term)))
+      .subscribe({
+        next: (results) => {
+          if (results) {
+            this.motherboards = results._embedded.motherboards;
+          }
+          this.motherboardLoading = false;
+        }
+      });
+  }
+
+  searchRams(): void {
+    this.ramSearchSubscription = this.ramSearchTerm$
+      .pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        tap(() => this.onRamSearchTermChange()),
+        switchMap(term => this.ramService.searchEntries(term)))
+      .subscribe({
+        next: (results) => {
+          if (results) {
+            this.rams = results._embedded.rams;
+          }
+          this.ramLoading = false;
+        }
+      });
+  }
+
+  searchCpus(): void {
+    this.cpuSearchSubscription = this.cpuSearchTerm$
+      .pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        tap(() => this.onCPUTermChange()),
+        switchMap(term => this.cpuService.searchEntries(term)))
+      .subscribe({
+        next: (results) => {
+          if (results) {
+            this.cpus = results._embedded.processors;
+          }
+          this.cpuLoading = false;
+        }
+      });
+  }
+
   ngOnDestroy(): void {
     if (this.powerSupplySearchSubscription) {
       this.powerSupplySearchSubscription.unsubscribe();
     }
     if (this.gpuSearchSubscription) {
       this.gpuSearchSubscription.unsubscribe();
+    }
+    if (this.motherboardSearchSubscription) {
+      this.motherboardSearchSubscription.unsubscribe();
+    }
+    if (this.ramSearchSubscription) {
+      this.ramSearchSubscription.unsubscribe();
+    }
+    if (this.cpuSearchSubscription) {
+      this.cpuSearchSubscription.unsubscribe();
     }
 
 
@@ -96,8 +174,16 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.gpuLoading = true;
   }
 
-  onChange(): void {
-    this.gpus = [];
+  onRamSearchTermChange(): void {
+    this.ramLoading = true;
+  }
+
+  onMotherboardSearchTermChange(): void {
+    this.motherboardLoading = true;
+  }
+
+  onCPUTermChange(): void {
+    this.cpuLoading = true;
   }
 
   compareGpus(): boolean {

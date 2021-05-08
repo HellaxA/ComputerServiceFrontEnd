@@ -1,74 +1,75 @@
 <div class="container-fluid">
 
-  <div class="row">
-    <div class="col back">
-      <button class="options" (click)="logout()">
-        Sign out
-      </button>
-    </div>
-  </div>
+  <!--  <div class="row">-->
+  <!--    <div class="col back">-->
+  <!--      <button class="options" (click)="logout()">-->
+  <!--        Sign out-->
+  <!--      </button>-->
+  <!--    </div>-->
+  <!--  </div>-->
 
   <!-- gpu search -->
-  <div class="card">
-    <div class="card-body">
-      <ng-select [items]="gpus"
-                 bindLabel="name"
-                 [loading]="gpuLoading"
-                 [minTermLength]="1"
-                 [typeahead]="gpuSearchTerm$"
-                 (change)="onChange()"
-                 [multiple]="true"
-                 maxSelectedItems="2"
-                 [compareWith]="compareGpus"
-      placeholder="Gpu search...">
-      </ng-select>
-    </div>
-    <!-- motherboard search -->
-    <div class="card-body">
-      <ng-select [items]="gpus"
-                 bindLabel="name"
-                 [loading]="motherboardLoading"
-                 [minTermLength]="1"
-                 [typeahead]="motherboardTerm$"
-                 (change)="onChange()"
-                 placeholder="Motherboard search...">
-      </ng-select>
-    </div>
+  <div class="pc-container">
+    <div class="form-select">
+      <div class="form-select-body">
+        <ng-select [items]="gpus"
+                   bindLabel="name"
+                   [loading]="gpuLoading"
+                   [minTermLength]="1"
+                   [typeahead]="gpuSearchTerm$"
+                   [multiple]="true"
+                   maxSelectedItems="2"
+                   [compareWith]="compareGpus"
+                   placeholder="Gpu search...">
+        </ng-select>
+      </div>
+      <!-- motherboard search -->
+      <div class="form-select-body">
+        <ng-select [items]="motherboards"
+                   bindLabel="name"
+                   [loading]="motherboardLoading"
+                   [minTermLength]="1"
+                   [typeahead]="motherboardTerm$"
+                   placeholder="Motherboard search...">
+        </ng-select>
+      </div>
 
-    <!-- ram search -->
-    <div class="card-body">
-      <ng-select [items]="gpus"
-                 bindLabel="name"
-                 [loading]="ramLoading"
-                 [minTermLength]="1"
-                 [typeahead]="ramSearchTerm$"
-                 (change)="onChange()"
-                 placeholder="RAM search...">
-      </ng-select>
-    </div>
+      <!-- ram search -->
+      <div class="form-select-body">
+        <ng-select [items]="rams"
+                   bindLabel="name"
+                   [loading]="ramLoading"
+                   [minTermLength]="1"
+                   [typeahead]="ramSearchTerm$"
+                   placeholder="RAM search...">
+        </ng-select>
+      </div>
 
-    <!-- power supply search -->
-    <div class="card-body">
-      <ng-select [items]="powerSupplies"
-                 bindLabel="name"
-                 [loading]="powerSupplyLoading"
-                 [minTermLength]="1"
-                 [typeahead]="powerSupplyTerm$"
-                 (change)="onChange()"
-                 placeholder="Power supply search...">
-      </ng-select>
-    </div>
+      <!-- power supply search -->
+      <div class="form-select-body">
+        <ng-select [items]="powerSupplies"
+                   bindLabel="name"
+                   [loading]="powerSupplyLoading"
+                   [minTermLength]="1"
+                   [typeahead]="powerSupplyTerm$"
+                   placeholder="Power supply search...">
+        </ng-select>
+      </div>
 
-    <!-- processor search -->
-    <div class="card-body">
-      <ng-select [items]="gpus"
-                 bindLabel="name"
-                 [loading]="cpuLoading"
-                 [minTermLength]="1"
-                 [typeahead]="cpuSearchTerm$"
-                 (change)="onChange()"
-                 placeholder="Processor search...">
-      </ng-select>
+      <!-- processor search -->
+      <div class="form-select-body">
+        <ng-select [items]="cpus"
+                   bindLabel="name"
+                   [loading]="cpuLoading"
+                   [minTermLength]="1"
+                   [typeahead]="cpuSearchTerm$"
+                   placeholder="Processor search...">
+        </ng-select>
+      </div>
+      <div class="form-select-button text-center">
+        <button type="submit" class="btn btn-dark">Submit</button>
+      </div>
+
     </div>
   </div>
 

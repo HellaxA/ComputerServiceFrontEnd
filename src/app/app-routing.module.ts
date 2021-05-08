@@ -4,10 +4,10 @@ import {LoginComponent} from './components/login/login.component';
 import {LandingComponent} from './components/landing/landing.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: '', pathMatch: 'full'},
+  {path: '', redirectTo: 'landing', pathMatch: 'full'},
   {path: 'login', component: LoginComponent},
   {path: 'landing', component: LandingComponent},
-  {path: '**', redirectTo: '', pathMatch: 'full'}
+  {path: '**', redirectTo: 'landing', pathMatch: 'full'}
 ];
 
 @NgModule({
