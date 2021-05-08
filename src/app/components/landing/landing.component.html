@@ -1,16 +1,8 @@
 <div class="container-fluid">
 
-  <!--  <div class="row">-->
-  <!--    <div class="col back">-->
-  <!--      <button class="options" (click)="logout()">-->
-  <!--        Sign out-->
-  <!--      </button>-->
-  <!--    </div>-->
-  <!--  </div>-->
-
   <!-- gpu search -->
   <div class="pc-container">
-    <div class="form-select">
+    <form [formGroup]="pcCompatibilityForm" class="form-select" (ngSubmit)="onSubmit()">
       <div class="form-select-body">
         <ng-select [items]="gpus"
                    bindLabel="name"
@@ -24,53 +16,81 @@
         </ng-select>
       </div>
       <!-- motherboard search -->
+
       <div class="form-select-body">
+        <div *ngIf="motherboardForm.invalid && (motherboardForm.dirty || motherboardForm.touched)">
+          <div *ngIf="motherboardForm.errors.required" class="text-center">
+            <span class="text-danger">Motherboard is required</span>
+          </div>
+        </div>
         <ng-select [items]="motherboards"
                    bindLabel="name"
                    [loading]="motherboardLoading"
                    [minTermLength]="1"
                    [typeahead]="motherboardTerm$"
-                   placeholder="Motherboard search...">
+                   placeholder="Motherboard search..."
+                   formControlName="motherboard">
         </ng-select>
       </div>
 
       <!-- ram search -->
+
       <div class="form-select-body">
+        <div *ngIf="ramForm.invalid && (ramForm.dirty || ramForm.touched)">
+          <div *ngIf="ramForm.errors.required" class="text-center">
+            <span class="text-danger">Ram is required</span>
+          </div>
+        </div>
         <ng-select [items]="rams"
                    bindLabel="name"
                    [loading]="ramLoading"
                    [minTermLength]="1"
                    [typeahead]="ramSearchTerm$"
-                   placeholder="RAM search...">
+                   placeholder="RAM search..."
+                   formControlName="ram">
         </ng-select>
+
       </div>
 
       <!-- power supply search -->
       <div class="form-select-body">
+        <div *ngIf="powerSupplyForm.invalid && (powerSupplyForm.dirty || powerSupplyForm.touched)">
+          <div *ngIf="powerSupplyForm.errors.required" class="text-center">
+            <span class="text-danger">Power Supply is required</span>
+          </div>
+        </div>
         <ng-select [items]="powerSupplies"
                    bindLabel="name"
                    [loading]="powerSupplyLoading"
                    [minTermLength]="1"
                    [typeahead]="powerSupplyTerm$"
-                   placeholder="Power supply search...">
+                   placeholder="Power supply search..."
+                   formControlName="powerSupply">
         </ng-select>
       </div>
 
       <!-- processor search -->
+
       <div class="form-select-body">
+        <div *ngIf="cpuForm.invalid && (cpuForm.dirty || cpuForm.touched)">
+          <div *ngIf="cpuForm.errors.required" class="text-center">
+            <span class="text-danger">CPU is required</span>
+          </div>
+        </div>
         <ng-select [items]="cpus"
                    bindLabel="name"
                    [loading]="cpuLoading"
                    [minTermLength]="1"
                    [typeahead]="cpuSearchTerm$"
-                   placeholder="Processor search...">
+                   placeholder="Processor search..."
+                   formControlName="processor">
         </ng-select>
       </div>
       <div class="form-select-button text-center">
-        <button type="submit" class="btn btn-dark">Submit</button>
+        <button type="submit" class="btn btn-dark" [disabled]="!pcCompatibilityForm.valid">Submit</button>
       </div>
 
-    </div>
+    </form>
   </div>
 
 </div>

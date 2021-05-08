@@ -13,6 +13,8 @@ import {ProcessorService} from '../../services/processor/processor.service';
 import {Motherboard} from '../../entities/pc/motherboard/motherboard';
 import {Ram} from '../../entities/pc/ram/ram';
 import {Processor} from '../../entities/pc/processor/processor';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {PcService} from '../../services/pc/pc.service';
 
 @Component({
   selector: 'app-landing',
@@ -26,8 +28,12 @@ export class LandingComponent implements OnInit, OnDestroy {
               private motherboardService: MotherboardService,
               private cpuService: ProcessorService,
               private powerSupplyService: PowerSupplyService,
+              private pcService: PcService,
+              private formBuilder: FormBuilder,
               private authService: AuthService) {
   }
+
+  pcCompatibilityForm: FormGroup;
 
   gpus: Gpu[] = [];
   powerSupplies: PowerSupply[] = [];
@@ -52,6 +58,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   cpuSearchSubscription: Subscription;
   motherboardSearchSubscription: Subscription;
   powerSupplySearchSubscription: Subscription;
+  checkCompatibilitySubscription: Subscription;
 
   ngOnInit(): void {
     this.searchGpus();
@@ -59,6 +66,14 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.searchMotherboards();
     this.searchCpus();
     this.searchRams();
+
+    this.pcCompatibilityForm = this.formBuilder.group({
+      gpus: new FormControl(null),
+      motherboard: new FormControl(null, Validators.required),
+      ram: new FormControl(null, Validators.required),
+      powerSupply: new FormControl(null, Validators.required),
+      processor: new FormControl(null, Validators.required),
+    });
   }
 
   searchPowerSupplies(): void {
@@ -162,8 +177,9 @@ export class LandingComponent implements OnInit, OnDestroy {
     if (this.cpuSearchSubscription) {
       this.cpuSearchSubscription.unsubscribe();
     }
-
-
+    if (this.checkCompatibilitySubscription) {
+      this.checkCompatibilitySubscription.unsubscribe();
+    }
   }
 
   onPSSearchTermChange(): void {
@@ -192,5 +208,29 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.authService.logout();
+  }
+
+  get gpusForm(): any {
+    return this.pcCompatibilityForm.get('gpus');
+  }
+
+  get motherboardForm(): any {
+    return this.pcCompatibilityForm.get('motherboard');
+  }
+
+  get ramForm(): any {
+    return this.pcCompatibilityForm.get('ram');
+  }
+
+  get cpuForm(): any {
+    return this.pcCompatibilityForm.get('processor');
+  }
+
+  get powerSupplyForm(): any {
+    return this.pcCompatibilityForm.get('powerSupply');
+  }
+
+  onSubmit(): void {
+    console.log(this.cpuForm.value);
   }
 }
