@@ -33,14 +33,24 @@ export class LandingComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private authService: AuthService) {
   }
+  checkCompatibilityLoading: boolean;
 
   pcCompatibilityForm: FormGroup;
-
   gpus: Gpu[] = [];
   powerSupplies: PowerSupply[] = [];
   rams: Ram[] = [];
   cpus: Processor[] = [];
   motherboards: Motherboard[] = [];
+
+  ramTypeCompatibleWithMotherboard = '';
+  powerSupplyCompatibleWithMotherboardPower = '';
+  ramGbAmountCompatibleWithMotherboard = '';
+  powerSupplyCompatibleWithMotherboardCpuPower = '';
+  processorCompatibleWithMotherboardSocket = '';
+  ramAmountCompatibleWithMotherboard = '';
+  tdpValid: string;
+  powerSupplyCompatibilityWithGpuPower = '';
+
 
   gpuLoading = false;
   ramLoading = false;
@@ -232,16 +242,48 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    this.checkCompatibilityLoading = true;
     const pc = new Pc(this.powerSupplyForm.value.id,
       this.motherboardForm.value.id,
       this.gpusForm.value.map(gpu => gpu.id),
       this.cpuForm.value.id,
       this.ramForm.value.id
       );
-    console.log(pc);
-
+    this.ramTypeCompatibleWithMotherboard = '';
+    this.powerSupplyCompatibleWithMotherboardPower = '';
+    this.ramGbAmountCompatibleWithMotherboard = '';
+    this.powerSupplyCompatibleWithMotherboardCpuPower = '';
+    this.processorCompatibleWithMotherboardSocket = '';
+    this.ramAmountCompatibleWithMotherboard = '';
+    this.tdpValid = '';
+    this.powerSupplyCompatibilityWithGpuPower = '';
     this.pcService.checkPcCompatibility(pc)
       .subscribe(response => {
+        if (!response.ramTypeCompatibleWithMotherboard) {
+          this.ramTypeCompatibleWithMotherboard = 'The RAM type is not compatible with a motherboard.';
+        }
+        if (!response.powerSupplyCompatibleWithMotherboardPower) {
+          this.powerSupplyCompatibleWithMotherboardPower = 'The Power supply pins are not compatible with a motherboard.';
+        }
+        if (!response.ramGbAmountCompatibleWithMotherboard) {
+          this.ramGbAmountCompatibleWithMotherboard = 'The RAM GB amount is not compatible with a motherboard.';
+        }
+        if (!response.powerSupplyCompatibleWithMotherboardCpuPower) {
+          this.powerSupplyCompatibleWithMotherboardCpuPower = 'The Power supply pins are not compatible with a motherboard.';
+        }
+        if (!response.processorCompatibleWithMotherboardSocket) {
+          this.processorCompatibleWithMotherboardSocket = 'The processor socket is not compatible with a motherboard socket.';
+        }
+        if (!response.ramAmountCompatibleWithMotherboard) {
+          this.ramAmountCompatibleWithMotherboard = 'The RAM amount is not compatible with a motherboard.';
+        }
+        if (!response.tdpValid) {
+          this.tdpValid = 'Not enough GPU power for all modules.';
+        }
+        if (!response.powerSupplyCompatibilityWithGpuPower) {
+          this.powerSupplyCompatibilityWithGpuPower = 'The Power supply pins are not compatible with GPU.';
+        }
+        this.checkCompatibilityLoading = false;
         console.log(response);
       });
   }

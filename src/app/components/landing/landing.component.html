@@ -1,8 +1,11 @@
 <div class="container-fluid">
-
+  <button class="btn btn-block" (click)="logout()">Logout</button>
   <!-- gpu search -->
   <div class="pc-container">
     <form [formGroup]="pcCompatibilityForm" class="form-select" (ngSubmit)="onSubmit()">
+      <div class="text-center">
+        <span class="text-danger"></span>
+      </div>
       <div class="form-select-body">
         <ng-select [items]="gpus"
                    bindLabel="name"
@@ -24,6 +27,9 @@
             <span class="text-danger">Motherboard is required</span>
           </div>
         </div>
+        <div class="text-center">
+          <span class="text-danger"></span>
+        </div>
         <ng-select [items]="motherboards"
                    bindLabel="name"
                    [loading]="motherboardLoading"
@@ -37,6 +43,11 @@
       <!-- ram search -->
 
       <div class="form-select-body">
+        <div class="text-center">
+          <span class="text-danger"> {{ ramAmountCompatibleWithMotherboard }}</span>
+          <span class="text-danger"> {{ ramTypeCompatibleWithMotherboard }}</span>
+          <span class="text-danger"> {{ ramGbAmountCompatibleWithMotherboard }}</span>
+        </div>
         <div *ngIf="ramForm.invalid && (ramForm.dirty || ramForm.touched)">
           <div *ngIf="ramForm.errors.required" class="text-center">
             <span class="text-danger">Ram is required</span>
@@ -55,6 +66,12 @@
 
       <!-- power supply search -->
       <div class="form-select-body">
+        <div class="text-center">
+          <span class="text-danger"> {{ tdpValid }}</span>
+          <span class="text-danger"> {{ powerSupplyCompatibilityWithGpuPower }}</span>
+          <span class="text-danger"> {{ powerSupplyCompatibleWithMotherboardCpuPower }}</span>
+          <span class="text-danger"> {{ powerSupplyCompatibleWithMotherboardPower }}</span>
+        </div>
         <div *ngIf="powerSupplyForm.invalid && (powerSupplyForm.dirty || powerSupplyForm.touched)">
           <div *ngIf="powerSupplyForm.errors.required" class="text-center">
             <span class="text-danger">Power Supply is required</span>
@@ -73,6 +90,9 @@
       <!-- processor search -->
 
       <div class="form-select-body">
+        <div class="text-center">
+          <span class="text-danger"> {{ processorCompatibleWithMotherboardSocket }}</span>
+        </div>
         <div *ngIf="cpuForm.invalid && (cpuForm.dirty || cpuForm.touched)">
           <div *ngIf="cpuForm.errors.required" class="text-center">
             <span class="text-danger">CPU is required</span>
@@ -88,8 +108,9 @@
         </ng-select>
       </div>
       <div class="form-select-button text-center">
-        <button type="submit" class="btn btn-dark" [disabled]="!pcCompatibilityForm.valid">
+        <button type="submit" class="btn btn-dark" [disabled]="!pcCompatibilityForm.valid || checkCompatibilityLoading">
           Check compatibility
+          <span *ngIf="checkCompatibilityLoading" class="spinner-border spinner-border-sm"></span>
         </button>
       </div>
 
