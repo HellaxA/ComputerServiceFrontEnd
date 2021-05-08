@@ -15,6 +15,7 @@ import {Ram} from '../../entities/pc/ram/ram';
 import {Processor} from '../../entities/pc/processor/processor';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PcService} from '../../services/pc/pc.service';
+import {Pc} from '../../entities/pc/pc/pc';
 
 @Component({
   selector: 'app-landing',
@@ -231,6 +232,17 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    console.log(this.cpuForm.value);
+    const pc = new Pc(this.powerSupplyForm.value.id,
+      this.motherboardForm.value.id,
+      this.gpusForm.value.map(gpu => gpu.id),
+      this.cpuForm.value.id,
+      this.ramForm.value.id
+      );
+    console.log(pc);
+
+    this.pcService.checkPcCompatibility(pc)
+      .subscribe(response => {
+        console.log(response);
+      });
   }
 }
