@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import {Gpu} from '../../entities/pc/gpu/gpu';
 import {Page} from '../../entities/page/page';
 import {PowerSupply} from '../../entities/pc/powersupply/power-supply';
 import {HttpClient} from '@angular/common/http';
@@ -16,7 +15,6 @@ export class PowerSupplyService {
   }
 
   searchEntries(term: any): Observable<GetResponsePowerSupplies> {
-    console.log(term);
     const url = `${environment.apiUrl}/api/power-supplies/search/findByNameContainingIgnoreCase?name=${term}&page=0&size=10`;
     return this.httpClient.get<any>(url).pipe(
       catchError(() => {
