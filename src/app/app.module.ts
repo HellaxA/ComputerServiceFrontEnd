@@ -10,14 +10,18 @@ import {InterceptorService} from './helpers/interceptor/interceptor.service';
 import {ErrorInterceptorService} from './helpers/interceptor/error-interceptor.service';
 import { LandingComponent } from './components/landing/landing.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NavbarComponent } from './components/navbar/navbar/navbar.component';
+import {MDBBootstrapModule} from 'angular-bootstrap-md';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    LandingComponent
+    LandingComponent,
+    NavbarComponent
   ],
   imports: [
+    MDBBootstrapModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,

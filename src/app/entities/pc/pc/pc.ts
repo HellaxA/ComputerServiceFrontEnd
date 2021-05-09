@@ -1,15 +1,21 @@
-export class Pc {
-  powerSupplyId: number;
-  motherboardId: number;
-  gpuIds: number[];
-  processorId: number;
-  ramId: number;
+import {Motherboard} from '../motherboard/motherboard';
+import {PowerSupply} from '../powersupply/power-supply';
+import {Gpu} from '../gpu/gpu';
+import {Processor} from '../processor/processor';
+import {Ram} from '../ram/ram';
 
-  constructor(powerSupplyId: number, motherboardId: number, gpuIds: number[], processorId: number, ramId: number) {
-    this.powerSupplyId = powerSupplyId;
-    this.motherboardId = motherboardId;
-    this.gpuIds = gpuIds;
-    this.processorId = processorId;
-    this.ramId = ramId;
+export class Pc {
+  powerSupply: PowerSupply;
+  motherboard: Motherboard;
+  gpus: Gpu[];
+  processor: Processor;
+  ram: Ram;
+
+  constructor(powerSupply: PowerSupply, motherboard: Motherboard, gpus: Gpu[], processor: Processor, ram: Ram) {
+    this.powerSupply = powerSupply;
+    this.motherboard = motherboard;
+    this.gpus = gpus;
+    this.processor = processor;
+    this.ram = ram;
   }
 }

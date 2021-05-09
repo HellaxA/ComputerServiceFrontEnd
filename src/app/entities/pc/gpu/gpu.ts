@@ -1,4 +1,4 @@
-import {PcComponent} from "../pc-component";
+import {PcComponent} from '../pc-component';
 
 export class Gpu extends PcComponent{
   addPower: string;
