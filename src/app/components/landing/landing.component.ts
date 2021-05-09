@@ -37,6 +37,12 @@ export class LandingComponent implements OnInit, OnDestroy {
               private authService: AuthService) {
   }
 
+  gpuMaxPrice = 10000;
+  motherboardMaxPrice = 10000;
+  cpuMaxPrice = 10000;
+  ramMaxPrice = 10000;
+  powerSupplyMaxPrice = 10000;
+
   checkCompatibilityLoading: boolean;
   checkResponse: GetPcCompatibilityCheck;
 
@@ -276,7 +282,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
           if (!data.pcCompatibilityCheckResponseDto.ramTypeCompatibleWithMotherboard) {
             this.ramTypeCompatibleWithMotherboard = `Sorry, we couldn\'t find the RAM type ` +
-                `with the same type of memory(${this.motherboardForm.value.ramType}) as in the motherboard.`;
+              `with the same type of memory(${this.motherboardForm.value.ramType}) as in the motherboard.`;
           }
           if (!data.pcCompatibilityCheckResponseDto.powerSupplyCompatibleWithMotherboardPower) {
             this.powerSupplyCompatibleWithMotherboardPower = `Sorry, we couldn\'t find the power supply ` +
@@ -299,13 +305,13 @@ export class LandingComponent implements OnInit, OnDestroy {
               `with the amount of memory sticks <= motherboard max amount (${this.motherboardForm.value.numRam}).`;
           }
           if (!data.pcCompatibilityCheckResponseDto.tdpValid) {
-            this.tdpValid = 'Sorry, we couldn\'t find power supply with enough power for all modules.';
+            this.tdpValid = 'Sorry, we couldn\'t find the power supply with enough power for all modules.';
           }
           if (data.pcCompatibilityCheckResponseDto.powerSupplyCompatibilityWithGpuPower && this.gpusForm.value) {
             for (const gpu of this.gpusForm.value) {
               if (data.pcCompatibilityCheckResponseDto.powerSupplyCompatibilityWithGpuPower[gpu.name] !== 'Ok') {
                 this.gpusResponse.push(`Sorry, we couldn\'t find the power supply with compatible pins.\n${gpu.name}: ` +
-                `${data.pcCompatibilityCheckResponseDto.powerSupplyCompatibilityWithGpuPower[gpu.name]}`);
+                  `${data.pcCompatibilityCheckResponseDto.powerSupplyCompatibilityWithGpuPower[gpu.name]}`);
               }
             }
           }
@@ -389,7 +395,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   resetAllWithFixButton(): void {
-    this.resetAll();
+    // this.resetAll();
     this.isCompatible = null;
   }
 }
