@@ -1,10 +1,9 @@
 <div class="container-fluid">
-  <button class="btn btn-block" (click)="logout()">Logout</button>
   <!-- gpu search -->
   <div class="pc-container">
-    <form [formGroup]="pcCompatibilityForm" class="form-select" (ngSubmit)="onSubmit()">
-      <div class="text-center">
-        <span class="text-danger"></span>
+    <form [formGroup]="pcCompatibilityForm" class="form-border" (ngSubmit)="onSubmit($event)">
+      <div class="text-center" *ngIf="gpusResponse">
+        <span class="text-danger" *ngFor="let gpuResponse of gpusResponse"> <br>{{ gpuResponse }}</span>
       </div>
       <div class="form-select-body">
         <ng-select [items]="gpus"
@@ -16,7 +15,8 @@
                    maxSelectedItems="2"
                    [compareWith]="compareGpus"
                    placeholder="Gpu search..."
-                   formControlName="gpus">
+                   formControlName="gpus"
+                   (change)="resetAllWithFixButton()">
         </ng-select>
       </div>
       <!-- motherboard search -->
@@ -36,7 +36,8 @@
                    [minTermLength]="1"
                    [typeahead]="motherboardTerm$"
                    placeholder="Motherboard search..."
-                   formControlName="motherboard">
+                   formControlName="motherboard"
+                   (change)="resetAllWithFixButton()">
         </ng-select>
       </div>
 
@@ -44,9 +45,11 @@
 
       <div class="form-select-body">
         <div class="text-center">
-          <span class="text-danger"> {{ ramAmountCompatibleWithMotherboard }}</span>
-          <span class="text-danger"> {{ ramTypeCompatibleWithMotherboard }}</span>
-          <span class="text-danger"> {{ ramGbAmountCompatibleWithMotherboard }}</span>
+          <span class="text-danger" *ngIf="ramAmountCompatibleWithMotherboard"> {{ ramAmountCompatibleWithMotherboard }}
+            <br></span>
+          <span class="text-danger" *ngIf="ramTypeCompatibleWithMotherboard"> {{ ramTypeCompatibleWithMotherboard }}<br></span>
+          <span class="text-danger"
+                *ngIf="ramGbAmountCompatibleWithMotherboard"> {{ ramGbAmountCompatibleWithMotherboard }}<br></span>
         </div>
         <div *ngIf="ramForm.invalid && (ramForm.dirty || ramForm.touched)">
           <div *ngIf="ramForm.errors.required" class="text-center">
@@ -59,18 +62,32 @@
                    [minTermLength]="1"
                    [typeahead]="ramSearchTerm$"
                    placeholder="RAM search..."
-                   formControlName="ram">
+                   formControlName="ram"
+                   (change)="resetAllWithFixButton()">
         </ng-select>
-
+        <div *ngIf="fixResponse?.pcCompatibilityCheckResponseDto.ramAmountCompatibleWithMotherboard ||
+                    fixResponse?.pcCompatibilityCheckResponseDto.ramGbAmountCompatibleWithMotherboard ||
+                    fixResponse?.pcCompatibilityCheckResponseDto.ramTypeCompatibleWithMotherboard">
+          <div *ngIf="fixResponse.rams?.length > 0">
+            <span>We have found few RAM's that you could pick so that your PC assembly will work!</span>
+            <div *ngFor="let ram of fixResponse.rams">
+              Name: {{ram.name}} |
+              Price: {{ram.price | currency: 'USD' }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- power supply search -->
       <div class="form-select-body">
         <div class="text-center">
-          <span class="text-danger"> {{ tdpValid }}</span>
-          <span class="text-danger"> {{ powerSupplyCompatibilityWithGpuPower }}</span>
-          <span class="text-danger"> {{ powerSupplyCompatibleWithMotherboardCpuPower }}</span>
-          <span class="text-danger"> {{ powerSupplyCompatibleWithMotherboardPower }}</span>
+          <span class="text-danger" *ngIf="tdpValid"> {{ tdpValid }}<br></span>
+          <span class="text-danger"
+                *ngIf="powerSupplyCompatibleWithMotherboardCpuPower"> {{ powerSupplyCompatibleWithMotherboardCpuPower }}
+            <br></span>
+          <span class="text-danger"
+                *ngIf="powerSupplyCompatibleWithMotherboardPower"> {{ powerSupplyCompatibleWithMotherboardPower }}
+            <br></span>
         </div>
         <div *ngIf="powerSupplyForm.invalid && (powerSupplyForm.dirty || powerSupplyForm.touched)">
           <div *ngIf="powerSupplyForm.errors.required" class="text-center">
@@ -83,15 +100,31 @@
                    [minTermLength]="1"
                    [typeahead]="powerSupplyTerm$"
                    placeholder="Power supply search..."
-                   formControlName="powerSupply">
+                   formControlName="powerSupply"
+                   (change)="resetAllWithFixButton()">
         </ng-select>
+        <div *ngIf="fixResponse?.pcCompatibilityCheckResponseDto.powerSupplyCompatibilityWithGpuPower ||
+                    fixResponse?.pcCompatibilityCheckResponseDto.powerSupplyCompatibleWithMotherboardCpuPower ||
+                    fixResponse?.pcCompatibilityCheckResponseDto.powerSupplyCompatibleWithMotherboardPower ||
+                    fixResponse?.pcCompatibilityCheckResponseDto.tdpValid">
+
+          <div *ngIf="fixResponse.powerSupplies?.length > 0">
+            <span>We have found few power supplies that you could pick so that your PC assembly will work!</span>
+            <div *ngFor="let powerSupply of fixResponse.powerSupplies">
+              Name: {{powerSupply.name}} |
+              Price: {{powerSupply.price | currency: 'USD' }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- processor search -->
 
       <div class="form-select-body">
         <div class="text-center">
-          <span class="text-danger"> {{ processorCompatibleWithMotherboardSocket }}</span>
+          <span class="text-danger"
+                *ngIf="processorCompatibleWithMotherboardSocket"> {{ processorCompatibleWithMotherboardSocket }}
+            <br></span>
         </div>
         <div *ngIf="cpuForm.invalid && (cpuForm.dirty || cpuForm.touched)">
           <div *ngIf="cpuForm.errors.required" class="text-center">
@@ -104,17 +137,41 @@
                    [minTermLength]="1"
                    [typeahead]="cpuSearchTerm$"
                    placeholder="Processor search..."
-                   formControlName="processor">
+                   formControlName="processor"
+                   (change)="resetAllWithFixButton()">
         </ng-select>
+        <div *ngIf="fixResponse?.pcCompatibilityCheckResponseDto.processorCompatibleWithMotherboardSocket">
+
+          <div *ngIf="fixResponse.processors?.length > 0">
+            <span>We have found few processors that you could pick so that your PC assembly will work!</span>
+            <div *ngFor="let proc of fixResponse.processors">
+              Name: {{proc.name}} |
+              Price: {{proc.price | currency: 'USD' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div *ngIf="isCompatible" class="text-center ">
+        <span class="text-success">This pc will work!</span>
       </div>
       <div class="form-select-button text-center">
-        <button type="submit" class="btn btn-dark" [disabled]="!pcCompatibilityForm.valid || checkCompatibilityLoading">
+        <button type="submit" class="btn btn-dark" [disabled]="!pcCompatibilityForm.valid ||
+         checkCompatibilityLoading" id="check_compatibility_button">
           Check compatibility
           <span *ngIf="checkCompatibilityLoading" class="spinner-border spinner-border-sm"></span>
         </button>
+        <button type="submit" class="btn btn-dark ml-2" id="propose_button">
+          Propose Components
+          <span *ngIf="false" class="spinner-border spinner-border-sm"></span>
+        </button>
+        <button *ngIf="isCompatible === false" type="submit" class="btn btn-dark ml-2"
+                [disabled]=fixLoading id="fix_button">
+          Fix
+          <span *ngIf="fixLoading" class="spinner-border spinner-border-sm"></span>
+        </button>
       </div>
-
     </form>
   </div>
-
 </div>
