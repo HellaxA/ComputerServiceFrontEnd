@@ -11,7 +11,6 @@ import {ErrorInterceptorService} from './helpers/interceptor/error-interceptor.s
 import { LandingComponent } from './components/landing/landing.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NavbarComponent } from './components/navbar/navbar/navbar.component';
-import {MDBBootstrapModule} from 'angular-bootstrap-md';
 
 @NgModule({
   declarations: [
@@ -21,7 +20,6 @@ import {MDBBootstrapModule} from 'angular-bootstrap-md';
     NavbarComponent
   ],
   imports: [
-    MDBBootstrapModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
