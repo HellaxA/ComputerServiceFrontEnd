@@ -3,7 +3,7 @@ import {Subject, Subscription} from 'rxjs';
 import {Gpu} from '../../entities/pc/gpu/gpu';
 import {ActivatedRoute} from '@angular/router';
 import {GpuService} from '../../services/gpu/gpu.service';
-import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
+import {catchError, debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
 import {AuthService} from '../../services/auth/auth.service';
 import {PowerSupplyService} from '../../services/power-supply/power-supply.service';
 import {PowerSupply} from '../../entities/pc/powersupply/power-supply';
@@ -42,12 +42,6 @@ export class LandingComponent implements OnInit, OnDestroy {
   cpuMaxPrice = 10000;
   ramMaxPrice = 10000;
   powerSupplyMaxPrice = 10000;
-
-  // @ViewChild('input_range_gpu') inputRangeGpu;
-  // @ViewChild('input_range_motherboard') inputRangeMb;
-  // @ViewChild('input_range_ram') inputRangeRam;
-  // @ViewChild('input_range_power_supply') inputRangePS;
-  // @ViewChild('input_range_processor') inputRangeCPU;
 
   checkCompatibilityLoading: boolean;
   proposeLoading: boolean;
@@ -95,6 +89,8 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   fixResponse: PcCompListDto;
   proposedComponents: PcCompListDto;
+
+  errorProposal: string;
 
   ngOnInit(): void {
     this.searchGpus();
@@ -307,7 +303,6 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   private proposeComponents(): void {
-    this.resetAll();
     this.proposeLoading = true;
 
     const powerSupplyId = this.powerSupplyForm.value?.id;
@@ -342,26 +337,36 @@ export class LandingComponent implements OnInit, OnDestroy {
       maxPrices
     };
 
-    this.pcService.proposeComponents(pcIdsWithMaxPriceDto).subscribe(data => {
-      this.proposedComponents = {} as PcCompListDto;
-      if (!this.cpuForm.value) {
-        this.proposedComponents.processors = data.processors;
-      }
-      if (!this.gpusForm.value || this.gpusForm.value.length === 0) {
-        this.proposedComponents.gpus = data.gpus;
-      }
-      if (!this.motherboardForm.value) {
-        this.proposedComponents.motherboards = data.motherboards;
-      }
-      if (!this.powerSupplyForm.value) {
-        this.proposedComponents.powerSupplies = data.powerSupplies;
-      }
-      if (!this.ramForm.value) {
-        this.proposedComponents.rams = data.rams;
-      }
-      this.proposedComponents.pcCompatibilityCheckResponseDto = data.pcCompatibilityCheckResponseDto;
-      this.proposeLoading = false;
-    });
+    this.pcService.proposeComponents(pcIdsWithMaxPriceDto)
+      .pipe(
+        catchError(err => {
+          if (err.includes('is not found')) {
+            this.errorProposal = err;
+          }
+          this.proposeLoading = false;
+          throw err;
+        })
+      )
+      .subscribe(data => {
+        this.proposedComponents = {} as PcCompListDto;
+        if (!this.cpuForm.value) {
+          this.proposedComponents.processors = data.processors;
+        }
+        if (!this.gpusForm.value || this.gpusForm.value.length === 0) {
+          this.proposedComponents.gpus = data.gpus;
+        }
+        if (!this.motherboardForm.value) {
+          this.proposedComponents.motherboards = data.motherboards;
+        }
+        if (!this.powerSupplyForm.value) {
+          this.proposedComponents.powerSupplies = data.powerSupplies;
+        }
+        if (!this.ramForm.value) {
+          this.proposedComponents.rams = data.rams;
+        }
+        this.proposedComponents.pcCompatibilityCheckResponseDto = data.pcCompatibilityCheckResponseDto;
+        this.proposeLoading = false;
+      });
   }
 
   private fix(): void {
@@ -483,6 +488,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   resetAll(): void {
+    this.errorProposal = null;
     this.proposedComponents = null;
     this.fixResponse = null;
     this.ramTypeCompatibleWithMotherboard = '';
@@ -506,7 +512,11 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   resetGpuWithFixButton(): void {
-
+    if (this.gpusForm.value && this.gpusForm.value.length > 0) {
+      this.gpusMaxPriceForm.disable();
+    } else {
+      this.gpusMaxPriceForm.enable();
+    }
     if (this.gpusForm.value && this.gpusForm.value.length > 0) {
       this.gpusMaxPriceForm.disable();
     } else {
@@ -552,11 +562,6 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.isCompatible = null;
   }
 
-  resetGpusWithFixButton(): void {
-    this.gpusResponse = [];
-    this.resetFixButton();
-  }
-
   fullForm(): boolean {
     return this.gpusForm.value && this.gpusForm.value.length > 0 &&
       this.motherboardForm.value && this.ramForm.value &&
@@ -566,7 +571,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   emptyForm(): boolean {
     return (!this.gpusForm.value || this.gpusForm.value.length === 0) &&
       !this.motherboardForm.value && !this.ramForm.value &&
-      !this.cpuForm.value && !this.motherboardForm.value;
+      !this.cpuForm.value && !this.powerSupplyForm.value;
   }
 
   setGpuValueRange(): void {
@@ -590,6 +595,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   setPSMaxPriceFormValue(value: string): void {
+
     this.powerSupplyMaxPriceForm.setValue(value);
   }
 
@@ -607,5 +613,40 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   setMBMaxPriceFormValue(value: string): void {
     this.motherboardMaxPriceForm.setValue(value);
+  }
+
+  getNumberFromInputRange(value: string): number {
+    return isNaN(+value) ? 5000 : +value;
+  }
+
+  setGpuForm(gpu: Gpu): void {
+    this.gpusMaxPriceForm.disable();
+    let gpus = this.gpusForm.value;
+    if (gpus && gpus.length < 2) {
+      gpus.push(gpu);
+    } else {
+      gpus = [gpu];
+    }
+    this.gpusForm.setValue(gpus);
+  }
+
+  setMotherboardForm(motherboard: Motherboard): void {
+    this.motherboardMaxPriceForm.disable();
+    this.motherboardForm.setValue(motherboard);
+  }
+
+  setRamForm(ram: Ram): void {
+    this.ramMaxPriceForm.disable();
+    this.ramForm.setValue(ram);
+  }
+
+  setPSForm(powerSupply: PowerSupply): void {
+    this.powerSupplyMaxPriceForm.disable();
+    this.powerSupplyForm.setValue(powerSupply);
+  }
+
+  setCpuForm(proc: Processor): void {
+    this.processorMaxPriceForm.disable();
+    this.cpuForm.setValue(proc);
   }
 }
