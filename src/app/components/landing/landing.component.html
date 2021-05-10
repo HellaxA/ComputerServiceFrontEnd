@@ -44,7 +44,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">$</span>
               </div>
-              <input formControlName="gpusMaxPrice" type="text" class="form-control"
+              <input formControlName="gpusMaxPrice" type="number" class="form-control"
                      [value]="input_range_gpu.value" (change)="setGpuValueRange()">
               <div class="input-group-append">
                 <span class="input-group-text">.00</span>
@@ -52,12 +52,13 @@
             </div>
           </div>
         </div>
-        <div *ngIf="proposedComponents?.gpus?.length > 0">
+        <div *ngIf="proposedComponents?.gpus?.length > 0" class="mt-2">
           <div class="alert alert-primary" role="alert">
             <span>We have found few GPU-s that you could pick so that your PC assembly will work!</span>
             <div *ngFor="let gpu of proposedComponents.gpus">
               Name: {{gpu.name}} |
-              Price: {{gpu.price}}$
+              Price: {{gpu.price | currency: 'USD'}} |
+              <a style="cursor: pointer" (click)="setGpuForm(gpu)"><strong>Click me to select this GPU</strong></a>
             </div>
           </div>
         </div>
@@ -108,7 +109,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">$</span>
               </div>
-              <input formControlName="motherboardMaxPrice" type="text" class="form-control"
+              <input formControlName="motherboardMaxPrice" type="number" class="form-control"
                      [value]="input_range_motherboard.value" (change)="setMBValueRange()">
               <div class="input-group-append">
                 <span class="input-group-text">.00</span>
@@ -116,12 +117,14 @@
             </div>
           </div>
         </div>
-        <div *ngIf="proposedComponents?.motherboards?.length > 0">
+        <div *ngIf="proposedComponents?.motherboards?.length > 0" class="mt-2">
           <div class="alert alert-primary" role="alert">
             <span>We have found few motherboards that you could pick so that your PC assembly will work!</span>
             <div *ngFor="let motherboard of proposedComponents.motherboards">
               Name: {{motherboard.name}} |
-              Price: {{motherboard.price}}$
+              Price: {{motherboard.price | currency: 'USD'}} |
+              <a style="cursor: pointer" (click)="setMotherboardForm(motherboard)"><strong>Click me to select this
+                motherboard</strong></a>
             </div>
           </div>
         </div>
@@ -176,7 +179,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">$</span>
               </div>
-              <input formControlName="ramMaxPrice" type="text" class="form-control"
+              <input formControlName="ramMaxPrice" type="number" class="form-control"
                      [value]="input_range_ram.value" (change)="setRamValueRange()">
               <div class="input-group-append">
                 <span class="input-group-text">.00</span>
@@ -186,26 +189,28 @@
         </div>
         <div *ngIf="fixResponse?.pcCompatibilityCheckResponseDto.ramAmountCompatibleWithMotherboard ||
                     fixResponse?.pcCompatibilityCheckResponseDto.ramGbAmountCompatibleWithMotherboard ||
-                    fixResponse?.pcCompatibilityCheckResponseDto.ramTypeCompatibleWithMotherboard">
+                    fixResponse?.pcCompatibilityCheckResponseDto.ramTypeCompatibleWithMotherboard" class="mt-2">
           <div *ngIf="fixResponse.rams?.length > 0">
             <div class="alert alert-primary" role="alert">
               <span>We have found few RAM's that you could pick so that your PC assembly will work!</span>
               <div *ngFor="let ram of fixResponse.rams">
                 Name: {{ram.name}} |
-                Price: {{ram.price}}$
+                Price: {{ram.price | currency: 'USD' }} |
+                <a style="cursor: pointer" (click)="setRamForm(ram)"><strong>Click me to select this RAM</strong></a>
               </div>
             </div>
           </div>
         </div>
         <div *ngIf="proposedComponents?.pcCompatibilityCheckResponseDto.ramAmountCompatibleWithMotherboard ||
                     proposedComponents?.pcCompatibilityCheckResponseDto.ramGbAmountCompatibleWithMotherboard ||
-                    proposedComponents?.pcCompatibilityCheckResponseDto.ramTypeCompatibleWithMotherboard">
+                    proposedComponents?.pcCompatibilityCheckResponseDto.ramTypeCompatibleWithMotherboard" class="mt-2">
           <div *ngIf="proposedComponents.rams?.length > 0">
             <div class="alert alert-primary" role="alert">
               <span>We have found few RAM's that you could pick so that your PC assembly will work!</span>
               <div *ngFor="let ram of proposedComponents.rams">
                 Name: {{ram.name}} |
-                Price: {{ram.price}}$
+                Price: {{ram.price | currency: 'USD'}} |
+                <a style="cursor: pointer" (click)="setRamForm(ram)"><strong>Click me to select this RAM</strong></a>
               </div>
             </div>
           </div>
@@ -260,7 +265,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">$</span>
               </div>
-              <input formControlName="powerSupplyMaxPrice" type="text" class="form-control"
+              <input formControlName="powerSupplyMaxPrice" type="number" class="form-control"
                      [value]="input_range_power_supply.value" (change)="setPSValueChange()">
               <div class="input-group-append">
                 <span class="input-group-text">.00</span>
@@ -271,14 +276,16 @@
         <div *ngIf="fixResponse?.pcCompatibilityCheckResponseDto.powerSupplyCompatibilityWithGpuPower ||
                     fixResponse?.pcCompatibilityCheckResponseDto.powerSupplyCompatibleWithMotherboardCpuPower ||
                     fixResponse?.pcCompatibilityCheckResponseDto.powerSupplyCompatibleWithMotherboardPower ||
-                    fixResponse?.pcCompatibilityCheckResponseDto.tdpValid">
+                    fixResponse?.pcCompatibilityCheckResponseDto.tdpValid" class="mt-2">
 
           <div *ngIf="fixResponse.powerSupplies?.length > 0">
             <div class="alert alert-primary" role="alert">
               <span>We have found few power supplies that you could pick so that your PC assembly will work!</span>
               <div *ngFor="let powerSupply of fixResponse.powerSupplies">
                 Name: {{powerSupply.name}} |
-                Price: {{powerSupply.price}}$
+                Price: {{powerSupply.price | currency: 'USD'}} |
+                <a style="cursor: pointer" (click)="setPSForm(powerSupply)"><strong>Click me to select this power
+                  supply</strong></a>
               </div>
             </div>
           </div>
@@ -286,14 +293,16 @@
         <div *ngIf="proposedComponents?.pcCompatibilityCheckResponseDto.powerSupplyCompatibilityWithGpuPower ||
                     proposedComponents?.pcCompatibilityCheckResponseDto.powerSupplyCompatibleWithMotherboardCpuPower ||
                     proposedComponents?.pcCompatibilityCheckResponseDto.powerSupplyCompatibleWithMotherboardPower ||
-                    proposedComponents?.pcCompatibilityCheckResponseDto.tdpValid">
+                    proposedComponents?.pcCompatibilityCheckResponseDto.tdpValid" class="mt-2">
 
           <div *ngIf="proposedComponents.powerSupplies?.length > 0">
             <div class="alert alert-primary" role="alert">
               <span>We have found few power supplies that you could pick so that your PC assembly will work!</span>
               <div *ngFor="let powerSupply of proposedComponents.powerSupplies">
                 Name: {{powerSupply.name}} |
-                Price: {{powerSupply.price}}$
+                Price: {{powerSupply.price | currency: 'USD'}} |
+                <a style="cursor: pointer" (click)="setPSForm(powerSupply)"><strong>Click me to select this power
+                  supply</strong></a>
               </div>
             </div>
           </div>
@@ -345,7 +354,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">$</span>
               </div>
-              <input formControlName="processorMaxPrice" type="text" class="form-control"
+              <input formControlName="processorMaxPrice" type="number" class="form-control"
                      [value]="input_range_processor.value" (change)="setCpuValueChange()">
               <div class="input-group-append">
                 <span class="input-group-text">.00</span>
@@ -353,32 +362,37 @@
             </div>
           </div>
         </div>
-        <div *ngIf="fixResponse?.pcCompatibilityCheckResponseDto.processorCompatibleWithMotherboardSocket">
+        <div *ngIf="fixResponse?.pcCompatibilityCheckResponseDto.processorCompatibleWithMotherboardSocket" class="mt-2">
 
           <div *ngIf="fixResponse.processors?.length > 0">
             <div class="alert alert-primary" role="alert">
               <span>We have found few processors that you could pick so that your PC assembly will work!</span>
               <div *ngFor="let proc of fixResponse.processors">
                 Name: {{proc.name}} |
-                Price: {{proc.price}}$
+                Price: {{proc.price | currency: 'USD'}} |
+                <a style="cursor: pointer" (click)="setCpuForm(proc)"><strong>Click me to select this processor</strong></a>
               </div>
             </div>
           </div>
         </div>
-        <div *ngIf="proposedComponents?.pcCompatibilityCheckResponseDto.processorCompatibleWithMotherboardSocket">
+        <div *ngIf="proposedComponents?.pcCompatibilityCheckResponseDto.processorCompatibleWithMotherboardSocket"
+             class="mt-2">
 
           <div *ngIf="proposedComponents.processors?.length > 0">
             <div class="alert alert-primary" role="alert">
               <span>We have found few processors that you could pick so that your PC assembly will work!</span>
               <div *ngFor="let proc of proposedComponents.processors">
                 Name: {{proc.name}} |
-                Price: {{proc.price}}$
+                Price: {{proc.price | currency: 'USD'}} |
+                <a style="cursor: pointer" (click)="setCpuForm(proc)"><strong>Click me to select this processor</strong></a>
               </div>
             </div>
           </div>
         </div>
       </div>
-
+      <div class="alert alert-danger" role="alert" *ngIf="errorProposal">
+        <span>{{errorProposal}} for your PC assembly. Please choose compatible components.</span>
+      </div>
       <!--      Buttons-->
 
       <div *ngIf="isCompatible" class="text-center ">
