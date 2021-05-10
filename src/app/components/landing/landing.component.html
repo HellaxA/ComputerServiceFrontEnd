@@ -8,7 +8,7 @@
           <div class="col-2">
             <label for="gpu-select" class="form-label">GPU:</label>
           </div>
-          <div class="col-4">
+          <div class="col-8">
             <div class="text-left" *ngIf="gpusResponse">
               <span class="text-danger" *ngFor="let gpuResponse of gpusResponse"> {{ gpuResponse }}<br></span>
             </div>
@@ -55,7 +55,7 @@
           <div class="col-2">
             <label for="motherboard-select" class="form-label">Motherboard: </label>
           </div>
-          <div class="col-4">
+          <div class="col-8">
             <div class="text-left">
               <div *ngIf="motherboardForm.invalid && (motherboardForm.dirty || motherboardForm.touched)">
                 <div *ngIf="motherboardForm.errors.required" class="text-center">
@@ -104,9 +104,9 @@
       <div class="form-select-body">
         <div class="row">
           <div class="col-2">
-            <label for="ram-select" class="form-label">Ram: </label>
+            <label for="ram-select" class="form-label">RAM: </label>
           </div>
-          <div class="col-4">
+          <div class="col-8">
             <div class="text-left">
               <span class="text-danger"
                     *ngIf="ramAmountCompatibleWithMotherboard"> {{ ramAmountCompatibleWithMotherboard }}<br>
@@ -171,9 +171,9 @@
       <div class="form-select-body">
         <div class="row">
           <div class="col-2">
-            <label>Power supply: </label>
+            <label for="power-supply-select" class="form-select">Power supply: </label>
           </div>
-          <div class="col-4">
+          <div class="col-8">
             <div class="text-left">
               <span class="text-danger" *ngIf="tdpValid"> {{ tdpValid }}<br></span>
               <span class="text-danger"
@@ -199,7 +199,8 @@
                        [typeahead]="powerSupplyTerm$"
                        placeholder="Power supply search..."
                        formControlName="powerSupply"
-                       (change)="resetAllWithFixButton()">
+                       (change)="resetAllWithFixButton()"
+                      id="power-supply-select">
             </ng-select>
           </div>
           <div class="col-3">
@@ -238,9 +239,9 @@
       <div class="form-select-body">
         <div class="row">
           <div class="col-2">
-            <label>Processor: </label>
+            <label for="processor-select" class="form-label">CPU: </label>
           </div>
-          <div class="col-4">
+          <div class="col-8">
             <div class="text-left">
                 <span class="text-danger"
                       *ngIf="processorCompatibleWithMotherboardSocket"> {{ processorCompatibleWithMotherboardSocket }}
@@ -263,7 +264,8 @@
                        [typeahead]="cpuSearchTerm$"
                        placeholder="Processor search..."
                        formControlName="processor"
-                       (change)="resetAllWithFixButton()">
+                       (change)="resetAllWithFixButton()"
+                        id="processor-select">
             </ng-select>
           </div>
           <div class="col-3">
@@ -290,8 +292,6 @@
                 Price: {{proc.price | currency: 'USD' }}
               </div>
             </div>
-            <!--            <span>We have found few processors that you could pick so that your PC assembly will work!</span>-->
-
           </div>
         </div>
       </div>
