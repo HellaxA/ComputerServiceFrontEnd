@@ -340,9 +340,8 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.pcService.proposeComponents(pcIdsWithMaxPriceDto)
       .pipe(
         catchError(err => {
-          if (err.includes('is not found')) {
-            this.errorProposal = err;
-          }
+          this.errorProposal = err;
+
           this.proposeLoading = false;
           throw err;
         })
