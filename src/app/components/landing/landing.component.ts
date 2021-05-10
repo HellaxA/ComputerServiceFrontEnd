@@ -565,7 +565,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   fullForm(): boolean {
     return this.gpusForm.value && this.gpusForm.value.length > 0 &&
       this.motherboardForm.value && this.ramForm.value &&
-      this.cpuForm.value && this.motherboardForm.value;
+      this.cpuForm.value && this.powerSupplyForm.value;
   }
 
   emptyForm(): boolean {
