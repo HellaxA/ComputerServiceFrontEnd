@@ -390,13 +390,13 @@
           </div>
         </div>
       </div>
-      <div class="alert alert-danger" role="alert" *ngIf="errorProposal">
+      <div class="alert alert-danger ml-3 mr-3 mt-2" role="alert" *ngIf="errorProposal">
         <span>{{errorProposal}} for your PC assembly. Please choose compatible components.</span>
       </div>
       <!--      Buttons-->
 
-      <div *ngIf="isCompatible" class="text-center ">
-        <span class="text-success">This pc will work!</span>
+      <div *ngIf="isCompatible" class="text-center alert alert-success mt-2 ml-3 mr-3" role="alert">
+        <span >This pc will work!</span>
       </div>
       <div class="form-select-button text-center">
 
@@ -409,7 +409,7 @@
 
         <!--                Propose Components Button-->
         <button type="submit" class="btn btn-dark ml-2" id="propose_components_button" [disabled]="
-            fullForm() || emptyForm()">
+            fullForm()">
           Propose Components
           <span *ngIf="proposeLoading" class="spinner-border spinner-border-sm"></span>
         </button>
