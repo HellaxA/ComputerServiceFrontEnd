@@ -26,5 +26,10 @@ export class PcService {
     const url = `${environment.apiUrl}/api/pc/compatibility/fix`;
     return this.httpClient.post<PcCompListDto>(url, pcReqAndRes);
   }
+
+  proposeComponents(pcIdsWithMaxPriceDto): Observable<PcCompListDto> {
+    const url = `${environment.apiUrl}/api/pc/compatibility/propose`;
+    return this.httpClient.post<PcCompListDto>(url, pcIdsWithMaxPriceDto);
+  }
 }
 
