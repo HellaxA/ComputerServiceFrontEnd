@@ -27,23 +27,37 @@
                        [compareWith]="compareGpus"
                        placeholder="Gpu search..."
                        formControlName="gpus"
-                       (change)="resetAllWithFixButton()"
+                       (change)="resetGpuWithFixButton()"
                        id="gpu-select">
             </ng-select>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <label for="gpu-range">GPU Max Price: </label>
             <input type="range" class="form-control-range" id="gpu-range"
                    min="0" max="10000" [value]="gpuMaxPrice"
-                   [disabled]="gpusForm.value || gpusForm.value?.length > 0"
-                   #input_range_gpu (input)="input_range_gpu.value">
-            <output>{{input_range_gpu.value | currency: 'USD' }}</output>
+                   [disabled]="gpusForm.value && gpusForm.value?.length > 0"
+                   #input_range_gpu (input)="input_range_gpu.value"
+                   (change)="setGpusMaxPriceFormValue(input_range_gpu.value)">
           </div>
-          <div class="col-1">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="gpu_check_box"
-                     [disabled]="gpusForm.value || gpusForm.value?.length > 0">
-              <label class="form-check-label" for="gpu_check_box">Mandatory</label>
+          <div class="col-1 form-price-width">
+            <div class="input-group input-group-sm mt-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input formControlName="gpusMaxPrice" type="text" class="form-control"
+                     [value]="input_range_gpu.value" (change)="setGpuValueRange()">
+              <div class="input-group-append">
+                <span class="input-group-text">.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="proposedComponents?.gpus?.length > 0">
+          <div class="alert alert-primary" role="alert">
+            <span>We have found few GPU-s that you could pick so that your PC assembly will work!</span>
+            <div *ngFor="let gpu of proposedComponents.gpus">
+              Name: {{gpu.name}} |
+              Price: {{gpu.price}}$
             </div>
           </div>
         </div>
@@ -58,7 +72,7 @@
           <div class="col-8">
             <div class="text-left">
               <div *ngIf="motherboardForm.invalid && (motherboardForm.dirty || motherboardForm.touched)">
-                <div *ngIf="motherboardForm.errors.required" class="text-center">
+                <div *ngIf="motherboardForm.errors.required" class="text-left">
                   <div class="text-info">
                     Motherboard is required for 'Compatibility Check'
                   </div>
@@ -77,23 +91,37 @@
                        [typeahead]="motherboardTerm$"
                        placeholder="Motherboard search..."
                        formControlName="motherboard"
-                       (change)="resetAllWithFixButton()"
+                       (change)="resetMBWithFixButton()"
                        id="motherboard-select">
             </ng-select>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <label for="motherboard-range">Motherboard Max Price: </label>
             <input type="range" class="form-control-range" id="motherboard-range"
                    min="0" max="10000" [value]="motherboardMaxPrice"
                    [disabled]="motherboardForm.value"
-                   #input_range_motherboard (input)="input_range_motherboard.value">
-            <output>{{input_range_motherboard.value | currency: 'USD' }}</output>
+                   #input_range_motherboard (input)="input_range_motherboard.value"
+                   (change)="setMBMaxPriceFormValue(input_range_motherboard.value)">
           </div>
-          <div class="col-1">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="motherboard_check_box"
-                     [disabled]="motherboardForm.value">
-              <label class="form-check-label" for="motherboard_check_box">Mandatory</label>
+          <div class="col-1 form-price-width">
+            <div class="input-group input-group-sm mt-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input formControlName="motherboardMaxPrice" type="text" class="form-control"
+                     [value]="input_range_motherboard.value" (change)="setMBValueRange()">
+              <div class="input-group-append">
+                <span class="input-group-text">.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="proposedComponents?.motherboards?.length > 0">
+          <div class="alert alert-primary" role="alert">
+            <span>We have found few motherboards that you could pick so that your PC assembly will work!</span>
+            <div *ngFor="let motherboard of proposedComponents.motherboards">
+              Name: {{motherboard.name}} |
+              Price: {{motherboard.price}}$
             </div>
           </div>
         </div>
@@ -117,7 +145,7 @@
                     *ngIf="ramGbAmountCompatibleWithMotherboard"> {{ ramGbAmountCompatibleWithMotherboard }}<br></span>
             </div>
             <div *ngIf="ramForm.invalid && (ramForm.dirty || ramForm.touched)">
-              <div *ngIf="ramForm.errors.required" class="text-center">
+              <div *ngIf="ramForm.errors.required" class="text-left">
                 <span class="text-info">Ram is required for 'Compatibility Check'</span>
               </div>
             </div>
@@ -132,21 +160,27 @@
                        [typeahead]="ramSearchTerm$"
                        placeholder="RAM search..."
                        formControlName="ram"
-                       (change)="resetAllWithFixButton()"
+                       (change)="resetRamWithFixButton()"
                        id="ram-select">
             </ng-select>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <label for="ram-range">RAM Max Price: </label>
             <input type="range" class="form-control-range" id="ram-range" min="0" max="10000"
                    [value]="ramMaxPrice" [disabled]="ramForm.value"
-                   #input_range_ram (input)="input_range_ram.value">
-            <output>{{input_range_ram.value | currency: 'USD' }}</output>
+                   #input_range_ram (input)="input_range_ram.value"
+                   (change)="setRamMaxPriceFormValue(input_range_ram.value)">
           </div>
-          <div class="col-1">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="ram_check_box" [disabled]="ramForm.value">
-              <label class="form-check-label" for="ram_check_box">Mandatory</label>
+          <div class="col-1  form-price-width">
+            <div class="input-group input-group-sm mt-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input formControlName="ramMaxPrice" type="text" class="form-control"
+                     [value]="input_range_ram.value" (change)="setRamValueRange()">
+              <div class="input-group-append">
+                <span class="input-group-text">.00</span>
+              </div>
             </div>
           </div>
         </div>
@@ -155,12 +189,23 @@
                     fixResponse?.pcCompatibilityCheckResponseDto.ramTypeCompatibleWithMotherboard">
           <div *ngIf="fixResponse.rams?.length > 0">
             <div class="alert alert-primary" role="alert">
-              <div class="alert alert-primary" role="alert">
-                <span>We have found few RAM's that you could pick so that your PC assembly will work!</span>
-                <div *ngFor="let ram of fixResponse.rams">
-                  Name: {{ram.name}} |
-                  Price: {{ram.price | currency: 'USD' }}
-                </div>
+              <span>We have found few RAM's that you could pick so that your PC assembly will work!</span>
+              <div *ngFor="let ram of fixResponse.rams">
+                Name: {{ram.name}} |
+                Price: {{ram.price}}$
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="proposedComponents?.pcCompatibilityCheckResponseDto.ramAmountCompatibleWithMotherboard ||
+                    proposedComponents?.pcCompatibilityCheckResponseDto.ramGbAmountCompatibleWithMotherboard ||
+                    proposedComponents?.pcCompatibilityCheckResponseDto.ramTypeCompatibleWithMotherboard">
+          <div *ngIf="proposedComponents.rams?.length > 0">
+            <div class="alert alert-primary" role="alert">
+              <span>We have found few RAM's that you could pick so that your PC assembly will work!</span>
+              <div *ngFor="let ram of proposedComponents.rams">
+                Name: {{ram.name}} |
+                Price: {{ram.price}}$
               </div>
             </div>
           </div>
@@ -184,7 +229,7 @@
                 <br></span>
             </div>
             <div *ngIf="powerSupplyForm.invalid && (powerSupplyForm.dirty || powerSupplyForm.touched)">
-              <div *ngIf="powerSupplyForm.errors.required" class="text-center">
+              <div *ngIf="powerSupplyForm.errors.required" class="text-left">
                 <span class="text-info">Power Supply is required for 'Compatibility Check'</span>
               </div>
             </div>
@@ -199,22 +244,27 @@
                        [typeahead]="powerSupplyTerm$"
                        placeholder="Power supply search..."
                        formControlName="powerSupply"
-                       (change)="resetAllWithFixButton()"
-                      id="power-supply-select">
+                       (change)="resetPSWithFixButton()"
+                       id="power-supply-select">
             </ng-select>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <label for="power-supply-range">Power Supply Max Price: </label>
             <input type="range" class="form-control-range" id="power-supply-range" min="0" max="10000"
                    [disabled]="powerSupplyForm.value" #input_range_power_supply
-                   (input)="input_range_power_supply.value" [value]="powerSupplyMaxPrice">
-            <output>{{input_range_power_supply.value | currency: 'USD' }}</output>
+                   (input)="input_range_power_supply.value" [value]="powerSupplyMaxPrice"
+                   (change)="setPSMaxPriceFormValue(input_range_power_supply.value)">
           </div>
-          <div class="col-1">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="power_supply_check_box"
-                     [disabled]="powerSupplyForm.value">
-              <label class="form-check-label" for="power_supply_check_box">Mandatory</label>
+          <div class="col-1 form-price-width">
+            <div class="input-group input-group-sm mt-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input formControlName="powerSupplyMaxPrice" type="text" class="form-control"
+                     [value]="input_range_power_supply.value" (change)="setPSValueChange()">
+              <div class="input-group-append">
+                <span class="input-group-text">.00</span>
+              </div>
             </div>
           </div>
         </div>
@@ -228,7 +278,22 @@
               <span>We have found few power supplies that you could pick so that your PC assembly will work!</span>
               <div *ngFor="let powerSupply of fixResponse.powerSupplies">
                 Name: {{powerSupply.name}} |
-                Price: {{powerSupply.price | currency: 'USD' }}
+                Price: {{powerSupply.price}}$
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="proposedComponents?.pcCompatibilityCheckResponseDto.powerSupplyCompatibilityWithGpuPower ||
+                    proposedComponents?.pcCompatibilityCheckResponseDto.powerSupplyCompatibleWithMotherboardCpuPower ||
+                    proposedComponents?.pcCompatibilityCheckResponseDto.powerSupplyCompatibleWithMotherboardPower ||
+                    proposedComponents?.pcCompatibilityCheckResponseDto.tdpValid">
+
+          <div *ngIf="proposedComponents.powerSupplies?.length > 0">
+            <div class="alert alert-primary" role="alert">
+              <span>We have found few power supplies that you could pick so that your PC assembly will work!</span>
+              <div *ngFor="let powerSupply of proposedComponents.powerSupplies">
+                Name: {{powerSupply.name}} |
+                Price: {{powerSupply.price}}$
               </div>
             </div>
           </div>
@@ -249,7 +314,7 @@
                 </span>
             </div>
             <div *ngIf="cpuForm.invalid && (cpuForm.dirty || cpuForm.touched)">
-              <div *ngIf="cpuForm.errors.required" class="text-center">
+              <div *ngIf="cpuForm.errors.required" class="text-left">
                 <span class="text-info">CPU is required for 'Compatibility Check'</span>
               </div>
             </div>
@@ -264,21 +329,27 @@
                        [typeahead]="cpuSearchTerm$"
                        placeholder="Processor search..."
                        formControlName="processor"
-                       (change)="resetAllWithFixButton()"
-                        id="processor-select">
+                       (change)="resetCpuWithFixButton()"
+                       id="processor-select">
             </ng-select>
           </div>
-          <div class="col-3">
+          <div class="col-2">
             <label for="processor-range">Processor Max Price: </label>
             <input type="range" class="form-control-range" id="processor-range" min="0" max="10000"
                    [value]="cpuMaxPrice" [disabled]="cpuForm.value"
-                   #input_range_processor (input)="input_range_processor.value">
-            <output>{{input_range_processor.value | currency: 'USD' }}</output>
+                   #input_range_processor (input)="input_range_processor.value"
+                   (change)="setCpuMaxPriceFormValue(input_range_processor.value)">
           </div>
-          <div class="col-1">
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="processor_check_box" [disabled]="cpuForm.value">
-              <label class="form-check-label" for="processor_check_box">Mandatory</label>
+          <div class="col-1 form-price-width">
+            <div class="input-group input-group-sm mt-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input formControlName="processorMaxPrice" type="text" class="form-control"
+                     [value]="input_range_processor.value" (change)="setCpuValueChange()">
+              <div class="input-group-append">
+                <span class="input-group-text">.00</span>
+              </div>
             </div>
           </div>
         </div>
@@ -289,29 +360,49 @@
               <span>We have found few processors that you could pick so that your PC assembly will work!</span>
               <div *ngFor="let proc of fixResponse.processors">
                 Name: {{proc.name}} |
-                Price: {{proc.price | currency: 'USD' }}
+                Price: {{proc.price}}$
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="proposedComponents?.pcCompatibilityCheckResponseDto.processorCompatibleWithMotherboardSocket">
+
+          <div *ngIf="proposedComponents.processors?.length > 0">
+            <div class="alert alert-primary" role="alert">
+              <span>We have found few processors that you could pick so that your PC assembly will work!</span>
+              <div *ngFor="let proc of proposedComponents.processors">
+                Name: {{proc.name}} |
+                Price: {{proc.price}}$
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      <!--      Buttons-->
 
       <div *ngIf="isCompatible" class="text-center ">
         <span class="text-success">This pc will work!</span>
       </div>
       <div class="form-select-button text-center">
+
+        <!--        Check Compatibility Button-->
         <button type="submit" class="btn btn-dark" [disabled]="!pcCompatibilityForm.valid ||
          checkCompatibilityLoading" id="check_compatibility_button">
-          Check compatibility
+          Check Compatibility
           <span *ngIf="checkCompatibilityLoading" class="spinner-border spinner-border-sm"></span>
         </button>
-        <button type="submit" class="btn btn-dark ml-2" id="propose_button">
+
+        <!--                Propose Components Button-->
+        <button type="submit" class="btn btn-dark ml-2" id="propose_components_button" [disabled]="
+            fullForm() || emptyForm()">
           Propose Components
-          <span *ngIf="false" class="spinner-border spinner-border-sm"></span>
+          <span *ngIf="proposeLoading" class="spinner-border spinner-border-sm"></span>
         </button>
+
+        <!--                        Fix Button-->
         <button *ngIf="isCompatible === false" type="submit" class="btn btn-dark ml-2"
-                [disabled]=fixLoading id="fix_button">
+                [disabled]="fixLoading" id="fix_button">
           Fix
           <span *ngIf="fixLoading" class="spinner-border spinner-border-sm"></span>
         </button>
