@@ -72,6 +72,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   motherboardLoading = false;
   powerSupplyLoading = false;
   fixLoading = false;
+  isPropose = false;
 
   gpuSearchTerm$ = new Subject<string>();
   ramSearchTerm$ = new Subject<string>();
@@ -303,6 +304,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   private proposeComponents(): void {
+    this.isPropose = true;
     this.proposeLoading = true;
 
     const powerSupplyId = this.powerSupplyForm.value?.id;
@@ -330,8 +332,6 @@ export class LandingComponent implements OnInit, OnDestroy {
       powerSupplyMaxPrice: this.powerSupplyMaxPriceForm.value
     };
 
-    console.log(maxPrices);
-
     const pcIdsWithMaxPriceDto = {
       pcRequestDto: pcIds,
       maxPrices
@@ -346,6 +346,9 @@ export class LandingComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(data => {
+        console.log(data);
+        this.checkPcCompatibilitySetErrors(data.pcCompatibilityCheckResponseDto);
+
         this.proposedComponents = {} as PcCompListDto;
         if (!this.cpuForm.value) {
           this.proposedComponents.processors = data.processors;
@@ -425,67 +428,73 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.checkCompatibilityLoading = true;
     this.isCompatible = null;
 
-    let gpuIds = [];
-    if (this.gpusForm.value) {
-      gpuIds = this.gpusForm.value.map(gpu => gpu.id);
-    }
+    const gpuIds = this.gpusForm.value ? this.gpusForm.value.map(gpu => gpu.id) : null;
+    const powerSupplyId = this.powerSupplyForm.value ? this.powerSupplyForm.value.id : null;
+    const motherboardId = this.motherboardForm.value ? this.motherboardForm.value.id : null;
+    const cpuId = this.cpuForm.value ? this.cpuForm.value.id : null;
+    const ramId = this.ramForm.value ? this.ramForm.value.id : null;
 
     const pcIds = new PcIds(
-      this.powerSupplyForm.value.id,
-      this.motherboardForm.value.id,
+      powerSupplyId,
+      motherboardId,
       gpuIds,
-      this.cpuForm.value.id,
-      this.ramForm.value.id
+      cpuId,
+      ramId
     );
 
     this.pcService.checkPcCompatibility(pcIds)
       .subscribe(response => {
-        this.checkResponse = response;
 
-        if (!response.ramTypeCompatibleWithMotherboard) {
-          this.ramTypeCompatibleWithMotherboard = 'The RAM type is not compatible with a motherboard.';
-        }
-        if (!response.powerSupplyCompatibleWithMotherboardPower) {
-          this.powerSupplyCompatibleWithMotherboardPower = 'The Power supply pins are not compatible with a motherboard.';
-        }
-        if (!response.ramGbAmountCompatibleWithMotherboard) {
-          this.ramGbAmountCompatibleWithMotherboard = 'The RAM GB amount is not compatible with a motherboard.';
-        }
-        if (!response.powerSupplyCompatibleWithMotherboardCpuPower) {
-          this.powerSupplyCompatibleWithMotherboardCpuPower = 'The Power supply pins are not compatible with a motherboard.';
-        }
-        if (!response.processorCompatibleWithMotherboardSocket) {
-          this.processorCompatibleWithMotherboardSocket = 'The processor socket is not compatible with a motherboard socket.';
-        }
-        if (!response.ramAmountCompatibleWithMotherboard) {
-          this.ramAmountCompatibleWithMotherboard = 'The RAM amount is not compatible with a motherboard.';
-        }
-        if (!response.tdpValid) {
-          this.tdpValid = 'Not enough GPU power for all modules.';
-        }
-        if (response.powerSupplyCompatibilityWithGpuPower && this.gpusForm.value) {
-          for (const gpu of this.gpusForm.value) {
-            if (response.powerSupplyCompatibilityWithGpuPower[gpu.name] !== 'Ok') {
-              this.gpusResponse.push(`${gpu.name}: ${response.powerSupplyCompatibilityWithGpuPower[gpu.name]}`);
-            }
-          }
-        }
-
-        this.isCompatible = response.ramTypeCompatibleWithMotherboard &&
-          response.powerSupplyCompatibleWithMotherboardPower &&
-          response.ramGbAmountCompatibleWithMotherboard &&
-          response.powerSupplyCompatibleWithMotherboardCpuPower &&
-          response.processorCompatibleWithMotherboardSocket &&
-          response.ramAmountCompatibleWithMotherboard &&
-          response.tdpValid &&
-          this.gpusResponse.length === 0;
+        this.checkPcCompatibilitySetErrors(response);
 
         this.checkCompatibilityLoading = false;
         console.log(response);
       });
   }
 
+  private checkPcCompatibilitySetErrors(response: GetPcCompatibilityCheck): void {
+    this.checkResponse = response;
+    if (!response.ramTypeCompatibleWithMotherboard) {
+      this.ramTypeCompatibleWithMotherboard = 'The RAM type is not compatible with a motherboard.';
+    }
+    if (!response.powerSupplyCompatibleWithMotherboardPower) {
+      this.powerSupplyCompatibleWithMotherboardPower = 'The Power supply pins are not compatible with a motherboard.';
+    }
+    if (!response.ramGbAmountCompatibleWithMotherboard) {
+      this.ramGbAmountCompatibleWithMotherboard = 'The RAM GB amount is not compatible with a motherboard.';
+    }
+    if (!response.powerSupplyCompatibleWithMotherboardCpuPower) {
+      this.powerSupplyCompatibleWithMotherboardCpuPower = 'The Power supply pins are not compatible with a motherboard.';
+    }
+    if (!response.processorCompatibleWithMotherboardSocket) {
+      this.processorCompatibleWithMotherboardSocket = 'The processor socket is not compatible with a motherboard socket.';
+    }
+    if (!response.ramAmountCompatibleWithMotherboard) {
+      this.ramAmountCompatibleWithMotherboard = 'The RAM amount is not compatible with a motherboard.';
+    }
+    if (!response.tdpValid) {
+      this.tdpValid = 'Not enough GPU power for all modules.';
+    }
+    if (response.powerSupplyCompatibilityWithGpuPower && this.gpusForm.value) {
+      for (const gpu of this.gpusForm.value) {
+        if (response.powerSupplyCompatibilityWithGpuPower[gpu.name] !== 'Ok') {
+          this.gpusResponse.push(`${gpu.name}: ${response.powerSupplyCompatibilityWithGpuPower[gpu.name]}`);
+        }
+      }
+    }
+
+    this.isCompatible = response.ramTypeCompatibleWithMotherboard &&
+      response.powerSupplyCompatibleWithMotherboardPower &&
+      response.ramGbAmountCompatibleWithMotherboard &&
+      response.powerSupplyCompatibleWithMotherboardCpuPower &&
+      response.processorCompatibleWithMotherboardSocket &&
+      response.ramAmountCompatibleWithMotherboard &&
+      response.tdpValid &&
+      this.gpusResponse.length === 0;
+  }
+
   resetAll(): void {
+    this.isPropose = null;
     this.errorProposal = null;
     this.proposedComponents = null;
     this.fixResponse = null;
@@ -611,10 +620,6 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   setMBMaxPriceFormValue(value: string): void {
     this.motherboardMaxPriceForm.setValue(value);
-  }
-
-  getNumberFromInputRange(value: string): number {
-    return isNaN(+value) ? 5000 : +value;
   }
 
   setGpuForm(gpu: Gpu): void {

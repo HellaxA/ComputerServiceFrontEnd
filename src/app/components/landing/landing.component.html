@@ -391,18 +391,17 @@
         </div>
       </div>
       <div class="alert alert-danger ml-3 mr-3 mt-2" role="alert" *ngIf="errorProposal">
-        <span>Your PC assembly is broken. Please choose compatible components.</span>
+        <span>Sorry, we haven't found suitable components for this PC assembly.</span>
       </div>
       <!--      Buttons-->
 
-      <div *ngIf="isCompatible" class="text-center alert alert-success mt-2 ml-3 mr-3" role="alert">
-        <span >This pc will work!</span>
+      <div *ngIf="isCompatible && !isPropose" class="text-center alert alert-success mt-2 ml-3 mr-3" role="alert">
+        <span >This PC assembly will work!</span>
       </div>
       <div class="form-select-button text-center">
 
         <!--        Check Compatibility Button-->
-        <button type="submit" class="btn btn-dark" [disabled]="!pcCompatibilityForm.valid ||
-         checkCompatibilityLoading" id="check_compatibility_button">
+        <button type="submit" class="btn btn-dark" [disabled]="checkCompatibilityLoading" id="check_compatibility_button">
           Check Compatibility
           <span *ngIf="checkCompatibilityLoading" class="spinner-border spinner-border-sm"></span>
         </button>
