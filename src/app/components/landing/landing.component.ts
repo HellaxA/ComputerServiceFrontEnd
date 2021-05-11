@@ -341,7 +341,6 @@ export class LandingComponent implements OnInit, OnDestroy {
       .pipe(
         catchError(err => {
           this.errorProposal = err;
-
           this.proposeLoading = false;
           throw err;
         })
