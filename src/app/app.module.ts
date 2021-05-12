@@ -11,13 +11,17 @@ import {ErrorInterceptorService} from './helpers/interceptor/error-interceptor.s
 import { LandingComponent } from './components/landing/landing.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NavbarComponent } from './components/navbar/navbar/navbar.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { SavePasswordComponent } from './components/save-password/save-password.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     LandingComponent,
-    NavbarComponent
+    NavbarComponent,
+    ForgotPasswordComponent,
+    SavePasswordComponent
   ],
   imports: [
     BrowserModule,
