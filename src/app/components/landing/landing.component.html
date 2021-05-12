@@ -70,17 +70,6 @@
           <div class="col-2">
             <label for="motherboard-select" class="form-label">Motherboard: </label>
           </div>
-          <div class="col-8">
-            <div class="text-left">
-              <div *ngIf="motherboardForm.invalid && (motherboardForm.dirty || motherboardForm.touched)">
-                <div *ngIf="motherboardForm.errors.required" class="text-left">
-                  <div class="text-info">
-                    Motherboard is required for 'Compatibility Check'
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="row">
@@ -146,11 +135,6 @@
                 <br></span>
               <span class="text-danger"
                     *ngIf="ramGbAmountCompatibleWithMotherboard"> {{ ramGbAmountCompatibleWithMotherboard }}<br></span>
-            </div>
-            <div *ngIf="ramForm.invalid && (ramForm.dirty || ramForm.touched)">
-              <div *ngIf="ramForm.errors.required" class="text-left">
-                <span class="text-info">Ram is required for 'Compatibility Check'</span>
-              </div>
             </div>
           </div>
         </div>
@@ -232,11 +216,6 @@
               <span class="text-danger"
                     *ngIf="powerSupplyCompatibleWithMotherboardPower"> {{ powerSupplyCompatibleWithMotherboardPower }}
                 <br></span>
-            </div>
-            <div *ngIf="powerSupplyForm.invalid && (powerSupplyForm.dirty || powerSupplyForm.touched)">
-              <div *ngIf="powerSupplyForm.errors.required" class="text-left">
-                <span class="text-info">Power Supply is required for 'Compatibility Check'</span>
-              </div>
             </div>
           </div>
         </div>
@@ -322,11 +301,6 @@
                   <br>
                 </span>
             </div>
-            <div *ngIf="cpuForm.invalid && (cpuForm.dirty || cpuForm.touched)">
-              <div *ngIf="cpuForm.errors.required" class="text-left">
-                <span class="text-info">CPU is required for 'Compatibility Check'</span>
-              </div>
-            </div>
           </div>
         </div>
         <div class="row">
@@ -401,7 +375,7 @@
       <div class="form-select-button text-center">
 
         <!--        Check Compatibility Button-->
-        <button type="submit" class="btn btn-dark" [disabled]="checkCompatibilityLoading" id="check_compatibility_button">
+        <button type="submit" class="btn btn-dark" [disabled]="checkCompatibilityLoading || areTwoCompsFilled()" id="check_compatibility_button">
           Check Compatibility
           <span *ngIf="checkCompatibilityLoading" class="spinner-border spinner-border-sm"></span>
         </button>

@@ -652,4 +652,25 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.processorMaxPriceForm.disable();
     this.cpuForm.setValue(proc);
   }
+
+  areTwoCompsFilled(): boolean {
+    let count = 0;
+
+    if (this.powerSupplyForm.value) {
+      count++;
+    }
+    if (this.gpusForm.value && this.gpusForm.value.length > 0) {
+      count++;
+    }
+    if (this.ramForm.value) {
+      count++;
+    }
+    if (this.motherboardForm.value) {
+      count++;
+    }
+    if (this.cpuForm.value) {
+      count++;
+    }
+    return count < 2;
+  }
 }
