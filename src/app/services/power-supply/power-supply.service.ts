@@ -22,6 +22,26 @@ export class PowerSupplyService {
         return of(null);
       }));
   }
+
+  getItems(thePageNumber: number, thePageSize: number): Observable<GetResponsePowerSupplies> {
+    thePageNumber--;
+    const url = `${environment.apiUrl}/api/power-supplies?page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<any>(url).pipe(
+      catchError(() => {
+        console.log('Error in \'Power Supply Search\'');
+        return of(null);
+      }));
+  }
+
+  findItems(thePageNumber: number, thePageSize: number, theKeyword: string): Observable<GetResponsePowerSupplies> {
+    thePageNumber--;
+    const url = `${environment.apiUrl}/api/power-supplies/search/findByNameContainingIgnoreCase?name=${theKeyword}&page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<any>(url).pipe(
+      catchError(() => {
+        console.log('Error in \'Power Supply Search\'');
+        return of(null);
+      }));
+  }
 }
 interface GetResponsePowerSupplies {
   _embedded: {

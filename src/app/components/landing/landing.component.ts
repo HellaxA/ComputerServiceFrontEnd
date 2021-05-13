@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {Gpu} from '../../entities/pc/gpu/gpu';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {GpuService} from '../../services/gpu/gpu.service';
-import {catchError, debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
+import {catchError, debounceTime, distinctUntilChanged, finalize, switchMap, tap} from 'rxjs/operators';
 import {AuthService} from '../../services/auth/auth.service';
 import {PowerSupplyService} from '../../services/power-supply/power-supply.service';
 import {PowerSupply} from '../../entities/pc/powersupply/power-supply';
@@ -34,7 +34,9 @@ export class LandingComponent implements OnInit, OnDestroy {
               private powerSupplyService: PowerSupplyService,
               private pcService: PcService,
               private formBuilder: FormBuilder,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private router: Router
+  ) {
   }
 
   gpuMaxPrice = 10000;
@@ -65,6 +67,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   gpusResponse = [];
 
   isCompatible: boolean = null;
+  isSaved: boolean = null;
 
   gpuLoading = false;
   ramLoading = false;
@@ -72,6 +75,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   motherboardLoading = false;
   powerSupplyLoading = false;
   fixLoading = false;
+  saveLoading = false;
   isPropose = false;
 
   gpuSearchTerm$ = new Subject<string>();
@@ -87,11 +91,15 @@ export class LandingComponent implements OnInit, OnDestroy {
   powerSupplySearchSubscription: Subscription;
   checkCompatibilitySubscription: Subscription;
   fixSubscription: Subscription;
+  saveSubscription: Subscription;
 
   fixResponse: PcCompListDto;
   proposedComponents: PcCompListDto;
 
   errorProposal: string;
+
+  newPcName = '';
+  isErrorSaved: boolean = null;
 
   ngOnInit(): void {
     this.searchGpus();
@@ -199,30 +207,6 @@ export class LandingComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    if (this.powerSupplySearchSubscription) {
-      this.powerSupplySearchSubscription.unsubscribe();
-    }
-    if (this.gpuSearchSubscription) {
-      this.gpuSearchSubscription.unsubscribe();
-    }
-    if (this.motherboardSearchSubscription) {
-      this.motherboardSearchSubscription.unsubscribe();
-    }
-    if (this.ramSearchSubscription) {
-      this.ramSearchSubscription.unsubscribe();
-    }
-    if (this.cpuSearchSubscription) {
-      this.cpuSearchSubscription.unsubscribe();
-    }
-    if (this.checkCompatibilitySubscription) {
-      this.checkCompatibilitySubscription.unsubscribe();
-    }
-    if (this.fixSubscription) {
-      this.fixSubscription.unsubscribe();
-    }
-  }
-
   onPSSearchTermChange(): void {
     this.powerSupplyLoading = true;
   }
@@ -293,6 +277,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   onSubmit($event): void {
     this.resetAll();
+
 
     if ($event.submitter.id === 'fix_button') {
       this.fix();
@@ -427,20 +412,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   private checkCompatibility(): void {
     this.checkCompatibilityLoading = true;
     this.isCompatible = null;
-
-    const gpuIds = this.gpusForm.value ? this.gpusForm.value.map(gpu => gpu.id) : null;
-    const powerSupplyId = this.powerSupplyForm.value ? this.powerSupplyForm.value.id : null;
-    const motherboardId = this.motherboardForm.value ? this.motherboardForm.value.id : null;
-    const cpuId = this.cpuForm.value ? this.cpuForm.value.id : null;
-    const ramId = this.ramForm.value ? this.ramForm.value.id : null;
-
-    const pcIds = new PcIds(
-      powerSupplyId,
-      motherboardId,
-      gpuIds,
-      cpuId,
-      ramId
-    );
+    const pcIds = this.getPcIds();
 
     this.pcService.checkPcCompatibility(pcIds)
       .subscribe(response => {
@@ -450,6 +422,22 @@ export class LandingComponent implements OnInit, OnDestroy {
         this.checkCompatibilityLoading = false;
         console.log(response);
       });
+  }
+
+  private getPcIds(): PcIds {
+    const gpuIds = this.gpusForm.value ? this.gpusForm.value.map(gpu => gpu.id) : null;
+    const powerSupplyId = this.powerSupplyForm.value ? this.powerSupplyForm.value.id : null;
+    const motherboardId = this.motherboardForm.value ? this.motherboardForm.value.id : null;
+    const cpuId = this.cpuForm.value ? this.cpuForm.value.id : null;
+    const ramId = this.ramForm.value ? this.ramForm.value.id : null;
+
+    return new PcIds(
+      powerSupplyId,
+      motherboardId,
+      gpuIds,
+      cpuId,
+      ramId
+    );
   }
 
   private checkPcCompatibilitySetErrors(response: GetPcCompatibilityCheck): void {
@@ -494,6 +482,8 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   resetAll(): void {
+    this.isErrorSaved = null;
+    this.isSaved = null;
     this.isPropose = null;
     this.errorProposal = null;
     this.proposedComponents = null;
@@ -506,6 +496,10 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.ramAmountCompatibleWithMotherboard = '';
     this.tdpValid = '';
     this.gpusResponse = [];
+  }
+
+  isLogged(): boolean {
+    return !!this.authService.userValue;
   }
 
   resetCpuWithFixButton(): void {
@@ -672,5 +666,70 @@ export class LandingComponent implements OnInit, OnDestroy {
       count++;
     }
     return count < 2;
+  }
+
+  savePc(): void {
+    if (!this.isLogged()) {
+      this.router.navigate(['login']);
+      return;
+    }
+
+    this.isErrorSaved = false;
+
+    this.isSaved = false;
+    this.newPcName =
+      prompt('Please, enter the name of this PC assembly...');
+    if (!this.newPcName) {
+      alert('Please, provide name for PC');
+      return;
+    }
+
+    const pcIds = this.getPcIds();
+    pcIds.name = this.newPcName;
+
+    this.saveLoading = true;
+
+    this.saveSubscription = this.pcService.savePc(pcIds)
+      .pipe(
+        catchError(err => {
+          this.isErrorSaved = true;
+          throw err;
+        }),
+        finalize(() => {
+          this.isCompatible = null;
+          this.saveLoading = false;
+        })
+      )
+      .subscribe(data => {
+        this.isSaved = true;
+        console.log(data);
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.powerSupplySearchSubscription) {
+      this.powerSupplySearchSubscription.unsubscribe();
+    }
+    if (this.gpuSearchSubscription) {
+      this.gpuSearchSubscription.unsubscribe();
+    }
+    if (this.motherboardSearchSubscription) {
+      this.motherboardSearchSubscription.unsubscribe();
+    }
+    if (this.ramSearchSubscription) {
+      this.ramSearchSubscription.unsubscribe();
+    }
+    if (this.cpuSearchSubscription) {
+      this.cpuSearchSubscription.unsubscribe();
+    }
+    if (this.checkCompatibilitySubscription) {
+      this.checkCompatibilitySubscription.unsubscribe();
+    }
+    if (this.fixSubscription) {
+      this.fixSubscription.unsubscribe();
+    }
+    if (this.saveSubscription) {
+      this.saveSubscription.unsubscribe();
+    }
   }
 }

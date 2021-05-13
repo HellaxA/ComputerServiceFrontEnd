@@ -1,0 +1,60 @@
+<div class="ml-5">
+  <div class="row mt-5">
+    <h1 class="display-4 black">GPU-s</h1>
+  </div>
+  <div class="row mt-5">
+
+    <form class="input-group">
+      <div class="col-9">
+        <input class="form-control mt-2" type="search" aria-label="default"
+               #myInput placeholder="Search for a GPU ..."
+               (keyup.enter)="doSearch(myInput.value)" aria-describedby="inputGroup-sizing-default">
+      </div>
+      <div class="col-2 mr-5">
+        <button type="submit" (click)="doSearch(myInput.value)">
+          Search
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+  <div *ngIf="items?.length == 0" class="alert alert-warning col-md-10 mt-5" role="alert">
+    No GPU-s found.
+  </div>
+  <div class="mt-5 row ml-5" *ngIf="items.length !== 0">
+    <div class="custom-table item-width black">
+      <div class="row thead">
+        <div class="col-3">Name</div>
+        <div class="col-2">Price</div>
+        <div class="col-2">Average Benchmark</div>
+        <div class="col-2">Additional Power Pins</div>
+        <div class="col-2">TDP</div>
+      </div>
+      <div class="mt-5 stripped">
+        <div class="row mt-2" *ngFor="let item of items">
+          <div class="col-3">{{item.name}}</div>
+          <div class="col-2">{{item.price | currency: 'USD'}}</div>
+          <div class="col-2">{{item.avgBench}}</div>
+          <div class="col-2">{{item.addPower}}</div>
+          <div class="col-2">{{item.tdp}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row pagination mt-3">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-9">
+          <ngb-pagination [(page)]="thePageNumber"
+                          [pageSize]="thePageSize"
+                          [collectionSize]="theTotalElements"
+                          [boundaryLinks]="true"
+                          (pageChange)="listItems()"
+                          class="ngb-pagination">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

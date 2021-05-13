@@ -1,0 +1,72 @@
+<div class="ml-5">
+  <div class="row mt-5">
+    <h1 class="display-4 black">Motherboards</h1>
+  </div>
+  <div class="row mt-5">
+
+    <form class="input-group">
+      <div class="col-9">
+        <input class="form-control mt-2" type="search" aria-label="default"
+               #myInput placeholder="Search for a motherboard ..."
+               (keyup.enter)="doSearch(myInput.value)" aria-describedby="inputGroup-sizing-default">
+      </div>
+      <div class="col-2 mr-5">
+        <button type="submit" (click)="doSearch(myInput.value)">
+          Search
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+  <div *ngIf="items?.length == 0" class="alert alert-warning col-md-10 mt-5" role="alert">
+    No motherboards found.
+  </div>
+  <div class="mt-5 row ml-5" *ngIf="items.length !== 0">
+    <div class="custom-table item-width black">
+      <div class="row thead">
+        <div class="col-1">Name</div>
+        <div class="col-1">Price</div>
+        <div class="col-1">Socket</div>
+        <div class="col-1">Max RAM GB amount</div>
+        <div class="col-1">RAM type</div>
+        <div class="col-1">Max RAM amount</div>
+        <div class="col-1">Power Pin</div>
+        <div class="col-1">Processor Power Pin</div>
+        <div class="col-1">Chipset</div>
+        <div class="col-1">Form factor</div>
+        <div class="col-1">M2</div>
+      </div>
+      <div class="mt-5 stripped">
+        <div class="row mt-2" *ngFor="let item of items">
+          <div class="col-1">{{item.name}}</div>
+          <div class="col-1">{{item.price | currency: 'USD'}}</div>
+          <div class="col-1">{{item.socket}}</div>
+          <div class="col-1">{{item.maxRam}}</div>
+          <div class="col-1">{{item.ramType}}</div>
+          <div class="col-1">{{item.numRam}}</div>
+          <div class="col-1">{{item.powerPin}}</div>
+          <div class="col-1">{{item.processorPowerPin}}</div>
+          <div class="col-1">{{item.chipset}}</div>
+          <div class="col-1">{{item.formFactor}}</div>
+          <div class="col-1">{{getBoolean(item.m2)}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row pagination mt-3">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-9">
+          <ngb-pagination [(page)]="thePageNumber"
+                          [pageSize]="thePageSize"
+                          [collectionSize]="theTotalElements"
+                          [boundaryLinks]="true"
+                          (pageChange)="listItems()"
+                          class="ngb-pagination">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
