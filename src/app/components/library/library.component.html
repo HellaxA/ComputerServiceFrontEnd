@@ -1,0 +1,27 @@
+<div class="fadeInDown">
+  <h1 class="display-4 mr-5">Catalog</h1>
+  <div class="mt-3 mb-5">
+    <ng-select [items]="components"
+               bindLabel="name"
+               [(ngModel)]="selectedComponent"
+                class="col-7">
+    </ng-select>
+  </div>
+  <div>
+    <div *ngIf="selectedComponent.name === 'GPU-s'" class="fadeIn first">
+      <app-gpus></app-gpus>
+    </div>
+    <div *ngIf="selectedComponent.name === 'Motherboards'" class="fadeIn first">
+      <app-motherboards></app-motherboards>
+    </div>
+    <div *ngIf="selectedComponent.name === 'RAM-s'" class="fadeIn first">
+      <app-rams></app-rams>
+    </div>
+    <div *ngIf="selectedComponent.name === 'Processors'" class="fadeIn first">
+      <app-cpus></app-cpus>
+    </div>
+    <div *ngIf="selectedComponent.name === 'Power Supplies'" class="fadeIn first">
+      <app-power-supplies></app-power-supplies>
+    </div>
+  </div>
+</div>

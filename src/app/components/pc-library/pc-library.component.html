@@ -1,0 +1,57 @@
+<div class="fadeInDown">
+  <div class="fadeIn first">
+    <div class="ml-5">
+      <div class="row mt-5">
+        <h1 class="display-4 black">Saved PC-s</h1>
+      </div>
+      <div class="row mt-5">
+
+        <form class="input-group">
+          <div class="col-9">
+            <input class="form-control mt-2" type="search" aria-label="default"
+                   #myInput placeholder="Search for a PC ..."
+                   (keyup.enter)="doSearch(myInput.value)" aria-describedby="inputGroup-sizing-default">
+          </div>
+          <div class="col-2 mr-5">
+            <button type="submit" (click)="doSearch(myInput.value)">
+              Search
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+      <div *ngIf="items?.length == 0" class="alert alert-warning col-md-10 mt-5" role="alert">
+        No PC-s found.
+      </div>
+      <div class="mt-5 row ml-5" *ngIf="items.length !== 0">
+        <div class="custom-table item-width black">
+          <div class="row thead">
+            <div class="col-3">Name</div>
+            <div class="col-1">Price</div>
+            <div class="col-1">GPU</div>
+            <div class="col-2">Motherboard</div>
+            <div class="col-1">RAM</div>
+            <div class="col-1">Power Supply</div>
+            <div class="col-1">Processor</div>
+          </div>
+          <div class="mt-5 stripped">
+            <div class="row mt-2" *ngFor="let item of items">
+              <div class="col-3">{{item.name}}></div>
+              <div class="col-1">{{item.price | currency: "USD"}}</div>
+              <div class="col-1" >
+                <a class="underlineHover arrow" [routerLink]="['']" (click)="goToItem(gpu.name, '/gpus/')" *ngFor="let gpu of item.gpus">{{gpu.name}}</a>
+              </div>
+              <div class="col-2"><a class="underlineHover arrow" (click)="goToItem(item.motherboard.name, '/motherboards/')">{{item.motherboard?.name}}</a></div>
+              <div class="col-1"><a class="underlineHover arrow" (click)="goToItem(item.ram.name, '/rams/')">{{item.ram?.name}}</a></div>
+              <div class="col-1"><a class="underlineHover arrow" (click)="goToItem(item.powerSupply.name, '/power-supplies/')">{{item.powerSupply?.name}}</a></div>
+              <div class="col-1"><a class="underlineHover arrow" (click)="goToItem(item.processor.name, '/cpus/')">{{item.processor?.name}}</a></div>
+              <div class="col-1"><a class="underlineHover arrow" (click)="remove(item)">Remove</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

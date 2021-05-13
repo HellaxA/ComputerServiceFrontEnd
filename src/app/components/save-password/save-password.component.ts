@@ -32,7 +32,8 @@ export class SavePasswordComponent implements OnInit, OnDestroy {
     this.passwordForm = this.formBuilder.group({
       password: new FormControl('', [
         Validators.required]),
-      passwordConfirm: new FormControl('')
+      passwordConfirm: new FormControl('', [
+        Validators.required])
     });
   }
 
@@ -54,7 +55,7 @@ export class SavePasswordComponent implements OnInit, OnDestroy {
           next: data => {
             switch (data) {
               case 'message.resetPasswordSuc': {
-                this.router.navigate(['']);
+                this.router.navigate(['/login']);
                 break;
               }
               case 'reset.token.null': {

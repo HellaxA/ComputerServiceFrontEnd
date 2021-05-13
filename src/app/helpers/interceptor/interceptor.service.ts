@@ -20,6 +20,7 @@ export class InterceptorService implements HttpInterceptor {
         setHeaders: {Authorization: `Bearer ${user.accessToken}`}
       });
     }
+
     return next.handle(request);
   }
 }

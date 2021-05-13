@@ -22,6 +22,26 @@ export class RamService {
         return of(null);
       }));
   }
+
+  getItems(thePageNumber: number, thePageSize: number): Observable<GetResponseRams> {
+    thePageNumber--;
+    const url = `${environment.apiUrl}/api/rams?page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<any>(url).pipe(
+      catchError(() => {
+        console.log('Error in \'RAM Search\'');
+        return of(null);
+      }));
+  }
+
+  findItems(thePageNumber: number, thePageSize: number, theKeyword: string): Observable<GetResponseRams> {
+    thePageNumber--;
+    const url = `${environment.apiUrl}/api/rams/search/findByNameContainingIgnoreCase?name=${theKeyword}&page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<any>(url).pipe(
+      catchError(() => {
+        console.log('Error in \'RAM Search\'');
+        return of(null);
+      }));
+  }
 }
 interface GetResponseRams {
   _embedded: {

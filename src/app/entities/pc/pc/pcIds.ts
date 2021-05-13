@@ -4,6 +4,8 @@ export class PcIds {
   gpuIds: number[];
   processorId: number;
   ramId: number;
+  price: number;
+  name: string;
 
   constructor(powerSupplyId: number, motherboardId: number, gpuIds: number[], processorId: number, ramId: number) {
     this.powerSupplyId = powerSupplyId;

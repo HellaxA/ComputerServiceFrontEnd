@@ -22,6 +22,26 @@ export class ProcessorService {
         return of(null);
       }));
   }
+
+  getItems(thePageNumber: number, thePageSize: number): Observable<GetResponseProcessors> {
+    thePageNumber--;
+    const url = `${environment.apiUrl}/api/processors?page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<any>(url).pipe(
+      catchError(() => {
+        console.log('Error in \'CPU Search\'');
+        return of(null);
+      }));
+  }
+
+  findItems(thePageNumber: number, thePageSize: number, theKeyword: string): Observable<GetResponseProcessors> {
+    thePageNumber--;
+    const url = `${environment.apiUrl}/api/processors/search/findByNameContainingIgnoreCase?name=${theKeyword}&page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<any>(url).pipe(
+      catchError(() => {
+        console.log('Error in \'CPU Search\'');
+        return of(null);
+      }));
+  }
 }
 interface GetResponseProcessors {
   _embedded: {

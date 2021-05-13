@@ -22,6 +22,26 @@ export class GpuService {
         return of(null);
       }));
   }
+
+  getItems(thePageNumber: number, thePageSize: number): Observable<GetResponseGpus> {
+    thePageNumber--;
+    const url = `${environment.apiUrl}/api/gpus?page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<any>(url).pipe(
+      catchError(() => {
+        console.log('Error in \'GPU Search\'');
+        return of(null);
+      }));
+  }
+
+  findItems(thePageNumber: number, thePageSize: number, theKeyword: string): Observable<GetResponseGpus> {
+    thePageNumber--;
+    const url = `${environment.apiUrl}/api/gpus/search/findByNameContainingIgnoreCase?name=${theKeyword}&page=${thePageNumber}&size=${thePageSize}`;
+    return this.httpClient.get<any>(url).pipe(
+      catchError(() => {
+        console.log('Error in \'GPU Search\'');
+        return of(null);
+      }));
+  }
 }
 
 interface GetResponseGpus {

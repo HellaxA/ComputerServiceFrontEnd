@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
@@ -35,6 +35,10 @@ export class AuthService {
 
         return user;
       }));
+  }
+
+  register(loginDto: LoginDto): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/api/register`, loginDto);
   }
 
   extractUserFromPayload(accessToken: string): User {

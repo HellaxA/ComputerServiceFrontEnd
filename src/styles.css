@@ -31,7 +31,7 @@
 /* BASIC */
 
 html {
-  background-color: #56baed;
+  background-color: #ffffff;
 }
 
 body {
@@ -78,7 +78,6 @@ h2 {
   width: 90%;
   max-width: 450px;
   position: relative;
-  padding: 0px;
   -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
   box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
   text-align: center;
@@ -181,7 +180,7 @@ input[type=email]::placeholder, input[type=password]::placeholder {
   -webkit-animation-name: fadeInDown;
   animation-name: fadeInDown;
   -webkit-animation-duration: 1s;
-  animation-duration: 1s;
+  animation-duration: 0.8s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
@@ -227,15 +226,15 @@ input[type=email]::placeholder, input[type=password]::placeholder {
   -moz-animation-fill-mode:forwards;
   animation-fill-mode:forwards;
 
-  -webkit-animation-duration:1s;
-  -moz-animation-duration:1s;
-  animation-duration:1s;
+  -webkit-animation-duration: 0.8s;
+  -moz-animation-duration: 0.8s;
+  animation-duration: 0.8s;
 }
 
 .fadeIn.first {
-  -webkit-animation-delay: 0.4s;
-  -moz-animation-delay: 0.4s;
-  animation-delay: 0.4s;
+  -webkit-animation-delay: 0.5s;
+  -moz-animation-delay: 0.5s;
+  animation-delay: 0.5s;
 }
 
 .fadeIn.second {
@@ -245,15 +244,15 @@ input[type=email]::placeholder, input[type=password]::placeholder {
 }
 
 .fadeIn.third {
-  -webkit-animation-delay: 0.8s;
-  -moz-animation-delay: 0.8s;
-  animation-delay: 0.8s;
+  -webkit-animation-delay: 0.7s;
+  -moz-animation-delay: 0.7s;
+  animation-delay: 0.7s;
 }
 
 .fadeIn.fourth {
-  -webkit-animation-delay: 1s;
-  -moz-animation-delay: 1s;
-  animation-delay: 1s;
+  -webkit-animation-delay: 0.8s;
+  -moz-animation-delay: 0.8s;
+  animation-delay: 0.8s;
 }
 
 /* Simple CSS3 Fade-in Animation */
@@ -276,7 +275,9 @@ input[type=email]::placeholder, input[type=password]::placeholder {
   width: 100%;
 }
 
-
+.arrow {
+  cursor: pointer;
+}
 
 /* OTHERS */
 
@@ -287,3 +288,44 @@ input[type=email]::placeholder, input[type=password]::placeholder {
 #icon {
   width:60%;
 }
+
+.search-config {
+  width: 100%;
+  flex-direction: column;
+}
+
+
+.custom-table {
+  width: 100%;
+  word-wrap: break-word;
+  min-width: 500px;
+  font-size: 1rem;
+}
+
+.black{
+  color: black;
+}
+.thead {
+  font-weight: bold;
+}
+
+.stripped .row div{
+  min-height: 60px;
+}
+
+.stripped .row:nth-of-type(odd) div {
+  background-color: #F8FAFB;
+}
+.stripped .row:nth-of-type(even) div {
+  background: #FFFFFF;
+}
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+}
+
+.navbar{
+  width: 100%;
+}
+
